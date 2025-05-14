@@ -27,8 +27,19 @@ namespace SitarLib
             
             // Setup main window with its view model
             var mainViewModel = new MainViewModel(dataService, dialogService, navigationService);
-            var mainWindow = new MainWindow { DataContext = mainViewModel };
             
+            // Pastikan app resources diinisialisasi terlebih dahulu
+            if (Current.Resources == null || !Current.Resources.Contains("BooleanToStringConverter"))
+            {
+                // Buat BooleanToStringConverter secara manual jika belum ada
+                if (!Current.Resources.Contains("BooleanToStringConverter"))
+                {
+                    Current.Resources.Add("BooleanToStringConverter", new BooleanToStringConverter());
+                }
+            }
+            
+            // Buat dan tampilkan MainWindow dengan DataContext-nya
+            var mainWindow = new MainWindow { DataContext = mainViewModel };
             MainWindow = mainWindow;
             mainWindow.Show();
         }
@@ -38,9 +49,15 @@ namespace SitarLib
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool boolValue = (bool)value;
-            string[] options = ((string)parameter).Split(';');
-            return boolValue ? options[0] : options[1];
+            if (value is bool boolValue && parameter is string options)
+            {
+                string[] splitOptions = options.Split(';');
+                if (splitOptions.Length >= 2)
+                {
+                    return boolValue ? splitOptions[0] : splitOptions[1];
+                }
+            }
+            return string.Empty;
         }
         
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
