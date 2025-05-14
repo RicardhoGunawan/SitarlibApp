@@ -1,0 +1,10 @@
+﻿<Application x:Class="SitarLib.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SitarLib">
+    <Application.Resources>
+        <ResourceDictionary>
+            <local:BooleanToStringConverter x:Key="BooleanToStringConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

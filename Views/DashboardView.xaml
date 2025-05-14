@@ -1,0 +1,167 @@
+﻿<UserControl x:Class="SitarLib.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SitarLib.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="800">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#3498db" Padding="20,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="SitarLib" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text=" | Dashboard" FontSize="22" Foreground="White"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Books" 
+                            Command="{Binding NavigateToBookCommand}"
+                            Margin="5,0" 
+                            Padding="15,5"
+                            Background="#2980b9"
+                            Foreground="White"
+                            BorderThickness="0"/>
+                    
+                    <Button Content="Members" 
+                            Command="{Binding NavigateToMemberCommand}"
+                            Margin="5,0" 
+                            Padding="15,5"
+                            Background="#2980b9"
+                            Foreground="White"
+                            BorderThickness="0"/>
+                    
+                    <Button Content="Borrowings" 
+                            Command="{Binding NavigateToBorrowingCommand}"
+                            Margin="5,0" 
+                            Padding="15,5"
+                            Background="#2980b9"
+                            Foreground="White"
+                            BorderThickness="0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- Dashboard Stats -->
+        <Grid Grid.Row="1" Margin="20,30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Grid.Column="0" 
+                    Background="White" 
+                    BorderBrush="#DDD" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Total Books" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding TotalBooks}" FontSize="28"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Grid.Column="1" 
+                    Background="White" 
+                    BorderBrush="#DDD" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Total Members" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding TotalMembers}" FontSize="28"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Grid.Column="2" 
+                    Background="White" 
+                    BorderBrush="#DDD" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Active Borrowings" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding ActiveBorrowings}" FontSize="28"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Grid.Column="3" 
+                    Background="White" 
+                    BorderBrush="#DDD" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Overdue Borrowings" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding OverdueBorrowings}" Foreground="Red" FontSize="28"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
+        <!-- Recent Borrowings -->
+        <Border Grid.Row="2" 
+                Background="White" 
+                BorderBrush="#DDD" 
+                BorderThickness="1" 
+                CornerRadius="5" 
+                Margin="20,0,20,20">
+            <Grid Margin="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0" Text="Recent Borrowings" FontWeight="Bold" FontSize="16"/>
+                    <Button Grid.Column="1" 
+                            Command="{Binding RefreshDataCommand}" 
+                            Content="Refresh" 
+                            Padding="10,3"/>
+                </Grid>
+                
+                <DataGrid Grid.Row="1" 
+                          ItemsSource="{Binding RecentBorrowings}" 
+                          Margin="0,10,0,0"
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True" 
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserReorderColumns="False"
+                          CanUserResizeRows="False"
+                          CanUserSortColumns="True"
+                          HeadersVisibility="Column"
+                          BorderThickness="1"
+                          GridLinesVisibility="All"
+                          AlternatingRowBackground="#F9F9F9">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Book Title" Binding="{Binding Book.Title}" Width="*"/>
+                        <DataGridTextColumn Header="Member" Binding="{Binding Member.FullName}" Width="*"/>
+                        <DataGridTextColumn Header="Borrow Date" Binding="{Binding BorrowDate, StringFormat=d}" Width="Auto"/>
+                        <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=d}" Width="Auto"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
