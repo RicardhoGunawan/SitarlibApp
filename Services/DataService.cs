@@ -773,5 +773,13 @@ namespace SitarLib.Services
         }
         
         #endregion
+
+        public User? CurrentUser { get; private set; }
+
+        public void ClearCurrentUser()
+        {
+            CurrentUser = null;
+        }
+
     }
 }

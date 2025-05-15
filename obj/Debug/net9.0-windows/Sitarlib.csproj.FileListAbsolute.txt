@@ -111,3 +111,4 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\runtimes\
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Debug\net9.0-windows\Sitarlib.sourcelink.json
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\Microsoft.Xaml.Behaviors.dll

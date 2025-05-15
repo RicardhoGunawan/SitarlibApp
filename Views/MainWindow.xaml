@@ -12,9 +12,6 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
-            <local:LoginView />
-        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
             <local:DashboardView />
         </DataTemplate>

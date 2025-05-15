@@ -5,92 +5,214 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SitarLib.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="800">
-    
+             d:DesignHeight="650" d:DesignWidth="900">
+
+    <UserControl.Resources>
+        <!-- Menggunakan style yang sama dari DashboardView -->
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="Background" Value="#2980b9" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1a6ea8" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk DataGrid -->
+        <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="CanUserResizeRows" Value="False" />
+            <Setter Property="CanUserSortColumns" Value="True" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="None" />
+            <Setter Property="AlternatingRowBackground" Value="#F9F9F9" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="RowHeight" Value="35" />
+        </Style>
+
+        <!-- Style untuk header DataGrid -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f0f6fb" />
+            <Setter Property="Foreground" Value="#333333" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk rows DataGrid -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="BorderBrush" Value="#EEEEEE" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk form input -->
+        <Style x:Key="FormInputStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Margin" Value="0,5,0,15" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+
+        <!-- Style untuk form label -->
+        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#555555" />
+        </Style>
+
+        <!-- Style untuk action buttons -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#f8f9fa" Offset="0"/>
+                <GradientStop Color="#e9ecef" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Header -->
-        <Border Grid.Row="0" Background="#3498db" Padding="20,15">
+        <Border Grid.Row="0" Padding="25,18">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#2980b9" Offset="0"/>
+                    <GradientStop Color="#3498db" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" />
+            </Border.Effect>
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Text="SitarLib" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text=" | Member Management" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                        <TextBlock.Effect>
+                            <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text=" | Member Management" FontSize="24" Foreground="White" Margin="5,0,0,0"/>
                 </StackPanel>
-                
+
                 <Button Grid.Column="1" 
-                        Content="Back to Dashboard" 
+                        Content="← Back to Dashboard" 
                         Command="{Binding NavigateToDashboardCommand}"
-                        Padding="15,5"
-                        Background="#2980b9"
-                        Foreground="White"
-                        BorderThickness="0"/>
+                        Style="{StaticResource HeaderButtonStyle}"/>
             </Grid>
         </Border>
-        
+
         <!-- Content -->
-        <Grid Grid.Row="1" Margin="20">
+        <Grid Grid.Row="1" Margin="25">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="350"/>
             </Grid.ColumnDefinitions>
-            
+
             <!-- Member List -->
             <Border Grid.Column="0" 
                     Background="White" 
-                    BorderBrush="#DDD" 
+                    BorderBrush="#DDDDDD" 
                     BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="0,0,10,0">
-                <Grid Margin="15">
+                    CornerRadius="8" 
+                    Margin="0,0,12,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Border.Effect>
+
+                <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
-                    <Grid Grid.Row="0" Margin="0,0,0,15">
+
+                    <!-- Search Section -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <TextBox Grid.Column="0" 
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="5"
-                                 Margin="0,0,10,0"
-                                 BorderBrush="#DDD"
-                                 BorderThickness="1"/>
-                        
-                        <Button Grid.Column="1" 
-                                Content="Search" 
-                                Padding="15,5"
+                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"
+                                Margin="0,0,10,0"/>
+
+                        <Button Grid.Column="1"
+                                Content="Search"
+                                Style="{StaticResource ActionButtonStyle}"
                                 Background="#3498db"
-                                Foreground="White"
-                                BorderThickness="0"/>
+                                Foreground="White"/>
                     </Grid>
-                    
-                    <DataGrid Grid.Row="1" 
-                              ItemsSource="{Binding Members}" 
-                              SelectedItem="{Binding SelectedMember}"
-                              AutoGenerateColumns="False" 
-                              IsReadOnly="True" 
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              CanUserReorderColumns="False"
-                              CanUserResizeRows="False"
-                              CanUserSortColumns="True"
-                              HeadersVisibility="Column"
-                              BorderThickness="1"
-                              GridLinesVisibility="All"
-                              AlternatingRowBackground="#F9F9F9">
+
+                    <!-- Members DataGrid -->
+                    <DataGrid Grid.Row="1"
+                             ItemsSource="{Binding Members}"
+                             SelectedItem="{Binding SelectedMember}"
+                             Style="{StaticResource CustomDataGridStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                             <DataGridTextColumn Header="Member Code" Binding="{Binding MemberCode}" Width="Auto"/>
@@ -98,92 +220,118 @@
                             <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto"/>
                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
                             <DataGridTextColumn Header="Expiry Date" Binding="{Binding MembershipExpiry, StringFormat=d}" Width="Auto"/>
-                            <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="Auto"/>
+                            <DataGridTemplateColumn Header="Status" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="3" Padding="8,3" Margin="5,0">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#e8f5e9"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                            <Setter Property="Background" Value="#ffebee"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Active"/>
+                                                        <Setter Property="Foreground" Value="#388e3c"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                                <Setter Property="Text" Value="Inactive"/>
+                                                                <Setter Property="Foreground" Value="#d32f2f"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </Border>
-            
+
             <!-- Member Form -->
             <Border Grid.Column="1" 
                     Background="White" 
-                    BorderBrush="#DDD" 
+                    BorderBrush="#DDDDDD" 
                     BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="10,0,0,0">
-                <ScrollViewer Margin="15" VerticalScrollBarVisibility="Auto">
+                    CornerRadius="8" 
+                    Margin="12,0,0,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Border.Effect>
+
+                <ScrollViewer Margin="20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Member;Add New Member'}" 
-                                  FontWeight="Bold" 
-                                  FontSize="16"
-                                  Margin="0,0,0,15"/>
-                        
-                        <TextBlock Text="Member Code" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CurrentMember.MemberCode, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="5" 
-                                IsReadOnly="{Binding IsEditing}"
-                                Margin="0,0,0,10"/>
-                        
-                        <TextBlock Text="Full Name" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CurrentMember.FullName, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="5" 
-                                Margin="0,0,0,10"/>
-                        
-                        <TextBlock Text="Address" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CurrentMember.Address, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="5" 
-                                Margin="0,0,0,10"/>
-                        
-                        <TextBlock Text="Phone Number" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CurrentMember.PhoneNumber, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="5" 
-                                Margin="0,0,0,10"/>
-                        
-                        <TextBlock Text="Email" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CurrentMember.Email, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="5" 
-                                Margin="0,0,0,10"/>
-                        
-                        <TextBlock Text="Membership Expiry" Margin="0,0,0,5"/>
-                        <DatePicker SelectedDate="{Binding CurrentMember.MembershipExpiry}" 
-                                    Margin="0,0,0,10"/>
-                        
-                        <CheckBox Content="Is Active" 
+                        <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Member;Add New Member'}"
+                                  FontWeight="Bold"
+                                  FontSize="18"
+                                  Foreground="#333333"
+                                  Margin="0,0,0,20"/>
+
+                        <TextBlock Text="Member Code" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding CurrentMember.MemberCode, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"
+                                IsReadOnly="{Binding IsEditing}"/>
+
+                        <TextBlock Text="Full Name" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding CurrentMember.FullName, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"/>
+
+                        <TextBlock Text="Address" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding CurrentMember.Address, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"
+                                TextWrapping="Wrap"
+                                AcceptsReturn="True"
+                                Height="60"/>
+
+                        <TextBlock Text="Phone Number" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding CurrentMember.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"/>
+
+                        <TextBlock Text="Email" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding CurrentMember.Email, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormInputStyle}"/>
+
+                        <TextBlock Text="Membership Expiry" Style="{StaticResource FormLabelStyle}"/>
+                        <DatePicker SelectedDate="{Binding CurrentMember.MembershipExpiry}"
+                                  Margin="0,5,0,15"/>
+
+                        <CheckBox Content="Is Active"
                                   IsChecked="{Binding CurrentMember.IsActive}"
                                   Margin="0,0,0,20"/>
-                        
+
+                        <!-- Action Buttons -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="Cancel" 
+                            <Button Content="Cancel"
                                     Command="{Binding CancelCommand}"
-                                    Padding="15,5" 
-                                    Margin="0,0,10,0"
-                                    Background="#AAA"
-                                    Foreground="White"
-                                    BorderThickness="0"/>
-                            
-                            <Button Content="Delete" 
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Background="#95a5a6"/>
+
+                            <Button Content="Delete"
                                     Command="{Binding DeleteCommand}"
-                                    Padding="15,5" 
-                                    Margin="0,0,10,0"
-                                    Background="#e74c3c"
-                                    Foreground="White"
-                                    BorderThickness="0"/>
-                            
-                            <Button Content="Save" 
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Background="#e74c3c"/>
+
+                            <Button Content="Save"
                                     Command="{Binding SaveCommand}"
-                                    Padding="15,5"
-                                    Background="#2ecc71"
-                                    Foreground="White"
-                                    BorderThickness="0"/>
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Background="#2ecc71"/>
                         </StackPanel>
-                        
-                        <Button Content="Add New" 
+
+                        <Button Content="Add New"
                                 Command="{Binding AddNewCommand}"
-                                Padding="15,5"
-                                Margin="0,15,0,0"
+                                Style="{StaticResource ActionButtonStyle}"
                                 Background="#3498db"
-                                Foreground="White"
-                                BorderThickness="0"/>
+                                Margin="0,15,0,0"
+                                HorizontalAlignment="Stretch"/>
                     </StackPanel>
                 </ScrollViewer>
             </Border>

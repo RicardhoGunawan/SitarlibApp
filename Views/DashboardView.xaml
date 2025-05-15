@@ -5,9 +5,167 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SitarLib.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="900">
+    
+    <UserControl.Resources>
+        <!-- Style untuk button di header -->
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="Background" Value="#2980b9" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1a6ea8" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk logout button -->
+        <Style x:Key="LogoutButtonStyle" TargetType="Button" BasedOn="{StaticResource HeaderButtonStyle}">
+            <Setter Property="Background" Value="#c0392b" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#a12a1f" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk statistik card -->
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk title pada card statistik -->
+        <Style x:Key="StatTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="Foreground" Value="#555555" />
+        </Style>
+
+        <!-- Style untuk nilai pada card statistik -->
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="32" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+
+        <!-- Style untuk DataGrid -->
+        <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="CanUserResizeRows" Value="False" />
+            <Setter Property="CanUserSortColumns" Value="True" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="None" />
+            <Setter Property="AlternatingRowBackground" Value="#F9F9F9" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="RowHeight" Value="35" />
+        </Style>
+
+        <!-- Style untuk header DataGrid -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f0f6fb" />
+            <Setter Property="Foreground" Value="#333333" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk rows DataGrid -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="BorderBrush" Value="#EEEEEE" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk refresh button -->
+        <Style x:Key="RefreshButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="Background" Value="#4CAF50" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3D8B40" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#f8f9fa" Offset="0"/>
+                <GradientStop Color="#e9ecef" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -15,7 +173,17 @@
         </Grid.RowDefinitions>
         
         <!-- Header -->
-        <Border Grid.Row="0" Background="#3498db" Padding="20,15">
+        <Border Grid.Row="0" Padding="25,18">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#2980b9" Offset="0"/>
+                    <GradientStop Color="#3498db" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" />
+            </Border.Effect>
+            
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -23,40 +191,42 @@
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Text="SitarLib" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text=" | Dashboard" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                        <TextBlock.Effect>
+                            <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text=" | Dashboard" FontSize="24" Foreground="White" Margin="5,0,0,0"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Content="Books" 
                             Command="{Binding NavigateToBookCommand}"
-                            Margin="5,0" 
-                            Padding="15,5"
-                            Background="#2980b9"
-                            Foreground="White"
-                            BorderThickness="0"/>
+                            Style="{StaticResource HeaderButtonStyle}"/>
                     
                     <Button Content="Members" 
                             Command="{Binding NavigateToMemberCommand}"
-                            Margin="5,0" 
-                            Padding="15,5"
-                            Background="#2980b9"
-                            Foreground="White"
-                            BorderThickness="0"/>
+                            Style="{StaticResource HeaderButtonStyle}"/>
                     
                     <Button Content="Borrowings" 
                             Command="{Binding NavigateToBorrowingCommand}"
-                            Margin="5,0" 
-                            Padding="15,5"
-                            Background="#2980b9"
-                            Foreground="White"
-                            BorderThickness="0"/>
+                            Style="{StaticResource HeaderButtonStyle}"/>
+                    
+                    <!-- Tombol Logout baru -->
+                    <Button Content="Logout" 
+                            Command="{Binding LogoutCommand}"
+                            Style="{StaticResource LogoutButtonStyle}"
+                            Margin="15,0,0,0">
+                        <Button.Effect>
+                            <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.3" />
+                        </Button.Effect>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
         
         <!-- Dashboard Stats -->
-        <Grid Grid.Row="1" Margin="20,30">
+        <Grid Grid.Row="1" Margin="25,35,25,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -64,63 +234,111 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <Border Grid.Column="0" 
-                    Background="White" 
-                    BorderBrush="#DDD" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Total Books" FontWeight="Bold" Margin="0,0,0,10"/>
-                    <TextBlock Text="{Binding TotalBooks}" FontSize="28"/>
-                </StackPanel>
+            <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top" Margin="-20,-15,-20,10">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#3498db" Offset="0"/>
+                                <GradientStop Color="#2980b9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Total Books" Style="{StaticResource StatTitleStyle}"/>
+                        <TextBlock Text="{Binding TotalBooks}" Style="{StaticResource StatValueStyle}" Foreground="#3498db"/>
+                    </StackPanel>
+                </Grid>
             </Border>
             
-            <Border Grid.Column="1" 
-                    Background="White" 
-                    BorderBrush="#DDD" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Total Members" FontWeight="Bold" Margin="0,0,0,10"/>
-                    <TextBlock Text="{Binding TotalMembers}" FontSize="28"/>
-                </StackPanel>
+            <Border Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top" Margin="-20,-15,-20,10">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#9b59b6" Offset="0"/>
+                                <GradientStop Color="#8e44ad" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Total Members" Style="{StaticResource StatTitleStyle}"/>
+                        <TextBlock Text="{Binding TotalMembers}" Style="{StaticResource StatValueStyle}" Foreground="#9b59b6"/>
+                    </StackPanel>
+                </Grid>
             </Border>
             
-            <Border Grid.Column="2" 
-                    Background="White" 
-                    BorderBrush="#DDD" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Active Borrowings" FontWeight="Bold" Margin="0,0,0,10"/>
-                    <TextBlock Text="{Binding ActiveBorrowings}" FontSize="28"/>
-                </StackPanel>
+            <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top" Margin="-20,-15,-20,10">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#2ecc71" Offset="0"/>
+                                <GradientStop Color="#27ae60" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Active Borrowings" Style="{StaticResource StatTitleStyle}"/>
+                        <TextBlock Text="{Binding ActiveBorrowings}" Style="{StaticResource StatValueStyle}" Foreground="#2ecc71"/>
+                    </StackPanel>
+                </Grid>
             </Border>
             
-            <Border Grid.Column="3" 
-                    Background="White" 
-                    BorderBrush="#DDD" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Overdue Borrowings" FontWeight="Bold" Margin="0,0,0,10"/>
-                    <TextBlock Text="{Binding OverdueBorrowings}" Foreground="Red" FontSize="28"/>
-                </StackPanel>
+            <Border Grid.Column="3" Style="{StaticResource StatCardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top" Margin="-20,-15,-20,10">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#e74c3c" Offset="0"/>
+                                <GradientStop Color="#c0392b" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Overdue Borrowings" Style="{StaticResource StatTitleStyle}"/>
+                        <TextBlock Text="{Binding OverdueBorrowings}" Style="{StaticResource StatValueStyle}" Foreground="#e74c3c"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
         
         <!-- Recent Borrowings -->
         <Border Grid.Row="2" 
                 Background="White" 
-                BorderBrush="#DDD" 
+                BorderBrush="#DDDDDD" 
                 BorderThickness="1" 
-                CornerRadius="5" 
-                Margin="20,0,20,20">
-            <Grid Margin="15">
+                CornerRadius="8" 
+                Margin="25,0,25,25">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+            </Border.Effect>
+            
+            <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -132,33 +350,94 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <TextBlock Grid.Column="0" Text="Recent Borrowings" FontWeight="Bold" FontSize="16"/>
+                    <StackPanel Grid.Column="0" Orientation="Vertical">
+                        <TextBlock Text="Recent Borrowings" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
+                        <TextBlock Text="List of recent borrowing transactions" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
                     <Button Grid.Column="1" 
                             Command="{Binding RefreshDataCommand}" 
-                            Content="Refresh" 
-                            Padding="10,3"/>
+                            Content="↻ Refresh" 
+                            Style="{StaticResource RefreshButtonStyle}"/>
                 </Grid>
                 
                 <DataGrid Grid.Row="1" 
-                          ItemsSource="{Binding RecentBorrowings}" 
-                          Margin="0,10,0,0"
-                          AutoGenerateColumns="False" 
-                          IsReadOnly="True" 
-                          CanUserAddRows="False"
-                          CanUserDeleteRows="False"
-                          CanUserReorderColumns="False"
-                          CanUserResizeRows="False"
-                          CanUserSortColumns="True"
-                          HeadersVisibility="Column"
-                          BorderThickness="1"
-                          GridLinesVisibility="All"
-                          AlternatingRowBackground="#F9F9F9">
+                          ItemsSource="{Binding RecentBorrowings}"
+                          Style="{StaticResource CustomDataGridStyle}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Book Title" Binding="{Binding Book.Title}" Width="*"/>
-                        <DataGridTextColumn Header="Member" Binding="{Binding Member.FullName}" Width="*"/>
-                        <DataGridTextColumn Header="Borrow Date" Binding="{Binding BorrowDate, StringFormat=d}" Width="Auto"/>
-                        <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=d}" Width="Auto"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="Auto"/>
+                        <DataGridTextColumn Header="Book Title" Binding="{Binding Book.Title}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <DataGridTextColumn Header="Member" Binding="{Binding Member.FullName}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <DataGridTextColumn Header="Borrow Date" Binding="{Binding BorrowDate, StringFormat=d}" Width="Auto">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=d}" Width="Auto">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        
+                        <DataGridTemplateColumn Header="Status" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="3" Padding="8,3" Margin="5,0" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#e1f5fe" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Overdue">
+                                                        <Setter Property="Background" Value="#ffebee" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Returned">
+                                                        <Setter Property="Background" Value="#e8f5e9" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Status}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#0288d1" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Overdue">
+                                                            <Setter Property="Foreground" Value="#d32f2f" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Returned">
+                                                            <Setter Property="Foreground" Value="#388e3c" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

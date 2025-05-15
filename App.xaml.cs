@@ -19,14 +19,10 @@ namespace SitarLib
             var navigationService = new NavigationService();
             
             // Register view models with navigation service
-            navigationService.Register("Login", () => new LoginViewModel(dataService, dialogService, navigationService));
             navigationService.Register("Dashboard", () => new DashboardViewModel(dataService, dialogService, navigationService));
             navigationService.Register("Book", () => new BookViewModel(dataService, dialogService, navigationService));
             navigationService.Register("Member", () => new MemberViewModel(dataService, dialogService, navigationService));
             navigationService.Register("Borrowing", () => new BorrowingViewModel(dataService, dialogService, navigationService));
-            
-            // Setup main window with its view model
-            var mainViewModel = new MainViewModel(dataService, dialogService, navigationService);
             
             // Pastikan app resources diinisialisasi terlebih dahulu
             if (Current.Resources == null || !Current.Resources.Contains("BooleanToStringConverter"))
@@ -38,10 +34,25 @@ namespace SitarLib
                 }
             }
             
-            // Buat dan tampilkan MainWindow dengan DataContext-nya
-            var mainWindow = new MainWindow { DataContext = mainViewModel };
-            MainWindow = mainWindow;
-            mainWindow.Show();
+            // Buat dan tampilkan LoginWindow terlebih dahulu
+            var loginViewModel = new LoginViewModel(dataService, dialogService, navigationService);
+            var loginWindow = new LoginWindow { DataContext = loginViewModel };
+            
+            // Ketika login berhasil, buka MainWindow
+            loginViewModel.LoginSuccessful += (sender, args) =>
+            {
+                // Buat dan tampilkan MainWindow dengan DataContext-nya
+                var mainViewModel = new MainViewModel(dataService, dialogService, navigationService);
+                var mainWindow = new MainWindow { DataContext = mainViewModel };
+                MainWindow = mainWindow;
+                mainWindow.Show();
+                
+                // Tutup window login
+                loginWindow.Close();
+            };
+            
+            // Tampilkan window login
+            loginWindow.Show();
         }
     }
     

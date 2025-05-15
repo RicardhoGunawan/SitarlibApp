@@ -4,9 +4,9 @@ using SitarLib.ViewModels;
 
 namespace SitarLib.Views
 {
-    public partial class LoginView : UserControl
+    public partial class LoginWindow : Window
     {
-        public LoginView()
+        public LoginWindow()
         {
             InitializeComponent();
             

@@ -19,6 +19,7 @@
           "Microsoft.Extensions.Logging": "9.0.4",
           "Microsoft.Extensions.Logging.Console": "9.0.4",
           "Microsoft.Extensions.Logging.Debug": "9.0.4",
+          "Microsoft.Xaml.Behaviors.Wpf": "1.1.135",
           "Serilog": "4.2.0",
           "Serilog.Extensions.Logging.File": "3.0.0",
           "Serilog.Sinks.Console": "6.0.0",
@@ -436,6 +437,14 @@
         }
       },
       "Microsoft.Win32.SystemEvents/7.0.0": {},
+      "Microsoft.Xaml.Behaviors.Wpf/1.1.135": {
+        "runtime": {
+          "lib/net6.0-windows7.0/Microsoft.Xaml.Behaviors.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.135.29210"
+          }
+        }
+      },
       "runtime.native.System.Data.SqlClient.sni/4.7.0": {
         "dependencies": {
           "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
@@ -1201,6 +1210,13 @@
       "sha512": "sha512-2nXPrhdAyAzir0gLl8Yy8S5Mnm/uBSQQA7jEsILOS1MTyS7DbmV1NgViMtvV1sfCD1ebITpNwb1NIinKeJgUVQ==",
       "path": "microsoft.win32.systemevents/7.0.0",
       "hashPath": "microsoft.win32.systemevents.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.Xaml.Behaviors.Wpf/1.1.135": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-r8qBEXmQfORso2+MVHnt8PSH4761zJ0SIxgQTSEDVLU97EN2FZdG6/ZCYUPhQy+OrPKgnpYBCAs3PS6Bs7wRsg==",
+      "path": "microsoft.xaml.behaviors.wpf/1.1.135",
+      "hashPath": "microsoft.xaml.behaviors.wpf.1.1.135.nupkg.sha512"
     },
     "runtime.native.System.Data.SqlClient.sni/4.7.0": {
       "type": "package",
