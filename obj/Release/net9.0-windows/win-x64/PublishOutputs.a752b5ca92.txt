@@ -426,6 +426,7 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Microsoft.Extensions.Optio
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Microsoft.Extensions.Primitives.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Microsoft.Xaml.Behaviors.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Serilog.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Serilog.Extensions.Logging.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Serilog.Extensions.Logging.File.dll

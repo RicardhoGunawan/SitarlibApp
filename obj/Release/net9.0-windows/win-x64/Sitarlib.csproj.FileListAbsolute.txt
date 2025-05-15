@@ -474,3 +474,4 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Sitarlib.pdb
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Sitarlib.genruntimeconfig.cache
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\ref\Sitarlib.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\Microsoft.Xaml.Behaviors.dll

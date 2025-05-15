@@ -486,7 +486,7 @@ namespace SitarLib.Services
                     DueDate = DateTime.Parse(reader["DueDate"].ToString()),
                     ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
                     Status = reader["Status"].ToString(),
-                    Fine = Convert.ToDecimal(reader["Fine"]),
+                    //Fine = Convert.ToDecimal(reader["Fine"]),
                     
                     // Create partial Book and Member objects with just the ID and name
                     Book = new Book { Id = Convert.ToInt32(reader["BookId"]), Title = reader["BookTitle"].ToString() },
@@ -500,18 +500,14 @@ namespace SitarLib.Services
         public List<Borrowing> GetOverdueBorrowings()
         {
             string sql = @"
-                SELECT b.*, bk.Title as BookTitle, m.FullName as MemberName
-                FROM Borrowings b
-                INNER JOIN Books bk ON b.BookId = bk.Id
-                INNER JOIN Members m ON b.MemberId = m.Id
-                WHERE b.ReturnDate IS NULL AND b.DueDate < @CurrentDate
-                ORDER BY b.DueDate;";
-            
-            var parameters = new Dictionary<string, object>
-            {
-                { "CurrentDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") }
-            };
-            
+            SELECT b.*, bk.Title as BookTitle, m.FullName as MemberName
+            FROM Borrowings b
+            INNER JOIN Books bk ON b.BookId = bk.Id
+            INNER JOIN Members m ON b.MemberId = m.Id
+            WHERE b.ReturnDate IS NULL 
+              AND DATE(b.DueDate, '+1 day') < DATE('now')
+            ORDER BY b.DueDate;";
+    
             return ExecuteQuery(sql, reader =>
             {
                 var borrowing = new Borrowing
@@ -523,16 +519,15 @@ namespace SitarLib.Services
                     DueDate = DateTime.Parse(reader["DueDate"].ToString()),
                     ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
                     Status = reader["Status"].ToString(),
-                    Fine = Convert.ToDecimal(reader["Fine"]),
-                    
-                    // Create partial Book and Member objects with just the ID and name
+
                     Book = new Book { Id = Convert.ToInt32(reader["BookId"]), Title = reader["BookTitle"].ToString() },
                     Member = new Member { Id = Convert.ToInt32(reader["MemberId"]), FullName = reader["MemberName"].ToString() }
                 };
-                
+        
                 return borrowing;
-            }, parameters);
+            });
         }
+
         
         public Borrowing GetBorrowingById(int id)
         {
@@ -556,7 +551,7 @@ namespace SitarLib.Services
                     DueDate = DateTime.Parse(reader["DueDate"].ToString()),
                     ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
                     Status = reader["Status"].ToString(),
-                    Fine = Convert.ToDecimal(reader["Fine"]),
+                    //Fine = Convert.ToDecimal(reader["Fine"]),
                     
                     // Create partial Book and Member objects with just the ID and name
                     Book = new Book { Id = Convert.ToInt32(reader["BookId"]), Title = reader["BookTitle"].ToString() },
@@ -669,12 +664,13 @@ namespace SitarLib.Services
                         decimal fine = 0;
                         string status = "Returned";
                         
-                        if (DateTime.Now > dueDate)
+                        TimeSpan overdueSpan = DateTime.Now.Date - dueDate.Date;
+                        if (overdueSpan.TotalDays > 1)
                         {
-                            TimeSpan overdueDays = DateTime.Now - dueDate;
-                            fine = (decimal)overdueDays.TotalDays * 1.0m;
+                            fine = (decimal)overdueSpan.TotalDays * 1.0m;
                             status = "Returned Late";
                         }
+
                         
                         // Update borrowing record
                         string updateSql = @"

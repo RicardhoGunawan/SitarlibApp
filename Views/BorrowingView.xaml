@@ -368,14 +368,14 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             
-                            <DataGridTextColumn Header="Fine" Binding="{Binding Fine, StringFormat=C}" Width="Auto">
+                            <!--<DataGridTextColumn Header="Fine" Binding="{Binding Fine, StringFormat=C}" Width="Auto">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="10,0" />
                                         <Setter Property="VerticalAlignment" Value="Center" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+                            </DataGridTextColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -408,63 +408,73 @@
                     </Rectangle>
                     
                     <ScrollViewer Grid.Row="1" Margin="20" VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Text="New Borrowing" 
-                                    FontWeight="Bold" 
-                                    FontSize="18"
-                                    Foreground="#333333"
-                                    Margin="0,0,0,5"/>
-                            
-                            <TextBlock Text="Fill in the details to create a new borrowing entry" 
-                                    Foreground="#777777" 
-                                    FontSize="12" 
-                                    Margin="0,0,0,20"/>
-                            
-                            <TextBlock Text="Select Book" Style="{StaticResource FieldLabelStyle}"/>
-                            <ComboBox ItemsSource="{Binding AvailableBooks}"
-                                    SelectedItem="{Binding SelectedBook}"
-                                    DisplayMemberPath="Title"
-                                    Style="{StaticResource CustomComboBoxStyle}"/>
-                            
-                            <TextBlock Text="Select Member" Style="{StaticResource FieldLabelStyle}"/>
-                            <ComboBox ItemsSource="{Binding ActiveMembers}"
-                                    SelectedItem="{Binding SelectedMember}"
-                                    DisplayMemberPath="FullName"
-                                    Style="{StaticResource CustomComboBoxStyle}"/>
-                            
-                            <TextBlock Text="Borrow Date" Style="{StaticResource FieldLabelStyle}"/>
-                            <DatePicker SelectedDate="{Binding CurrentBorrowing.BorrowDate}" 
-                                        IsEnabled="False"
-                                        Style="{StaticResource CustomDatePickerStyle}"/>
-                            
-                            <TextBlock Text="Due Date" Style="{StaticResource FieldLabelStyle}"/>
-                            <DatePicker SelectedDate="{Binding CurrentBorrowing.DueDate}" 
-                                        Style="{StaticResource CustomDatePickerStyle}"/>
-                            
-                            <Button Content="Borrow Book" 
-                                    Command="{Binding BorrowCommand}"
-                                    Background="#2ecc71"
-                                    Style="{StaticResource ActionButtonStyle}"/>
-                            
-                            <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
-                            
-                            <TextBlock Text="Selected Borrowing" 
-                                     FontWeight="Bold" 
-                                     FontSize="16"
-                                     Foreground="#333333"
-                                     Margin="0,0,0,15"/>
-                            
-                            <Button Content="Return Selected Book" 
-                                    Command="{Binding ReturnCommand}"
-                                    Background="#3498db"
-                                    Style="{StaticResource ActionButtonStyle}"/>
-                            
-                            <Button Content="Cancel" 
-                                    Command="{Binding CancelCommand}"
-                                    Background="#95a5a6"
-                                    Style="{StaticResource ActionButtonStyle}"/>
-                        </StackPanel>
-                    </ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="New Borrowing" 
+                                FontWeight="Bold" 
+                                FontSize="18"
+                                Foreground="#333333"
+                                Margin="0,0,0,5"/>
+                        
+                        <TextBlock Text="Fill in the details to create a new borrowing entry" 
+                                Foreground="#777777" 
+                                FontSize="12" 
+                                Margin="0,0,0,20"/>
+                        
+                        <!-- Book Selection with Integrated Search -->
+                        <TextBlock Text="Select Book (Type to search by Title or ISBN)" Style="{StaticResource FieldLabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding FilteredBooks}"
+                                SelectedItem="{Binding SelectedBook}"
+                                Text="{Binding BookSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                DisplayMemberPath="Title"
+                                IsEditable="True"
+                                IsTextSearchEnabled="True"
+                                StaysOpenOnEdit="True"
+                                Style="{StaticResource CustomComboBoxStyle}"/>
+                        
+                        <!-- Member Selection with Integrated Search -->
+                        <TextBlock Text="Select Member (Type to search by Name or Code)" Style="{StaticResource FieldLabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding FilteredMembers}"
+                                SelectedItem="{Binding SelectedMember}"
+                                Text="{Binding MemberSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                DisplayMemberPath="FullName"
+                                IsEditable="True"
+                                IsTextSearchEnabled="True"
+                                StaysOpenOnEdit="True"
+                                Style="{StaticResource CustomComboBoxStyle}"/>
+                        
+                        <TextBlock Text="Borrow Date" Style="{StaticResource FieldLabelStyle}"/>
+                        <DatePicker SelectedDate="{Binding CurrentBorrowing.BorrowDate}" 
+                                    IsEnabled="False"
+                                    Style="{StaticResource CustomDatePickerStyle}"/>
+                        
+                        <TextBlock Text="Due Date" Style="{StaticResource FieldLabelStyle}"/>
+                        <DatePicker SelectedDate="{Binding CurrentBorrowing.DueDate}" 
+                                    Style="{StaticResource CustomDatePickerStyle}"/>
+                        
+                        <Button Content="Borrow Book" 
+                                Command="{Binding BorrowCommand}"
+                                Background="#2ecc71"
+                                Style="{StaticResource ActionButtonStyle}"/>
+                        
+                        <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
+                        
+                        <TextBlock Text="Selected Borrowing" 
+                                 FontWeight="Bold" 
+                                 FontSize="16"
+                                 Foreground="#333333"
+                                 Margin="0,0,0,15"/>
+                        
+                        <Button Content="Return Selected Book" 
+                                Command="{Binding ReturnCommand}"
+                                Background="#3498db"
+                                Style="{StaticResource ActionButtonStyle}"/>
+                        
+                        <Button Content="Cancel" 
+                                Command="{Binding CancelCommand}"
+                                Background="#95a5a6"
+                                Style="{StaticResource ActionButtonStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>

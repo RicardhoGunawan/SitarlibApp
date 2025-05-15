@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Collections.Generic;
 using SitarLib.Helpers;
 using SitarLib.Models;
 using SitarLib.Services;
@@ -37,11 +40,25 @@ namespace SitarLib.ViewModels
             set => SetProperty(ref _availableBooks, value);
         }
 
+        private ObservableCollection<Book> _filteredBooks;
+        public ObservableCollection<Book> FilteredBooks
+        {
+            get => _filteredBooks;
+            set => SetProperty(ref _filteredBooks, value);
+        }
+
         private ObservableCollection<Member> _activeMembers;
         public ObservableCollection<Member> ActiveMembers
         {
             get => _activeMembers;
             set => SetProperty(ref _activeMembers, value);
+        }
+
+        private ObservableCollection<Member> _filteredMembers;
+        public ObservableCollection<Member> FilteredMembers
+        {
+            get => _filteredMembers;
+            set => SetProperty(ref _filteredMembers, value);
         }
 
         private Book _selectedBook;
@@ -85,6 +102,34 @@ namespace SitarLib.ViewModels
             }
         }
 
+        private string _bookSearchText = string.Empty;
+        public string BookSearchText
+        {
+            get => _bookSearchText;
+            set
+            {
+                if (SetProperty(ref _bookSearchText, value))
+                {
+                    // Filter as the user types in the combo box
+                    FilterBooks();
+                }
+            }
+        }
+
+        private string _memberSearchText = string.Empty;
+        public string MemberSearchText
+        {
+            get => _memberSearchText;
+            set
+            {
+                if (SetProperty(ref _memberSearchText, value))
+                {
+                    // Filter as the user types in the combo box
+                    FilterMembers();
+                }
+            }
+        }
+
         private string _filterStatus;
         public string FilterStatus
         {
@@ -108,6 +153,8 @@ namespace SitarLib.ViewModels
         public ICommand ReturnCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand NavigateToDashboardCommand { get; }
+        public ICommand SearchBooksCommand { get; }
+        public ICommand SearchMembersCommand { get; }
 
         public BorrowingViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService)
             : base(dataService, dialogService, navigationService)
@@ -119,6 +166,11 @@ namespace SitarLib.ViewModels
             ReturnCommand = new RelayCommand(_ => ExecuteReturn(), _ => CanReturn());
             CancelCommand = new RelayCommand(_ => ExecuteCancel());
             NavigateToDashboardCommand = new RelayCommand(_ => NavigationService.NavigateTo("Dashboard"));
+            // No longer need separate search commands since search is integrated into combo boxes
+            
+            // Initialize properties
+            BookSearchText = string.Empty;
+            MemberSearchText = string.Empty;
             
             FilterStatus = "All";
             LoadBorrowings();
@@ -130,22 +182,22 @@ namespace SitarLib.ViewModels
         private void LoadBorrowings()
         {
             IsBusy = true;
-            Borrowings = new ObservableCollection<Borrowing>(DataService.GetAllBorrowings()); // ✅
+            Borrowings = new ObservableCollection<Borrowing>(DataService.GetAllBorrowings());
             IsBusy = false;
         }
 
         private void LoadAvailableBooks()
         {
-            AvailableBooks = new ObservableCollection<Book>(
-                DataService.GetAllBooks().Where(b => b.Stock > 0)
-            );
+            var books = DataService.GetAllBooks().Where(b => b.Stock > 0).ToList();
+            AvailableBooks = new ObservableCollection<Book>(books);
+            FilteredBooks = new ObservableCollection<Book>(books);
         }
 
         private void LoadActiveMembers()
         {
-            ActiveMembers = new ObservableCollection<Member>(
-                DataService.GetAllMembers().Where(m => m.IsActive)
-            );
+            var members = DataService.GetAllMembers().Where(m => m.IsActive).ToList();
+            ActiveMembers = new ObservableCollection<Member>(members);
+            FilteredMembers = new ObservableCollection<Member>(members);
         }
 
         private void FilterBorrowings()
@@ -174,20 +226,67 @@ namespace SitarLib.ViewModels
             }
     
             // Convert List to ObservableCollection
-            Borrowings = new ObservableCollection<Borrowing>(allBorrowings); // ✅
+            Borrowings = new ObservableCollection<Borrowing>(allBorrowings);
         }
 
+        private void FilterBooks()
+        {
+            if (AvailableBooks == null) return;
+            
+            if (string.IsNullOrWhiteSpace(BookSearchText))
+            {
+                // If no search text, show all available books
+                FilteredBooks = new ObservableCollection<Book>(AvailableBooks);
+                return;
+            }
+
+            var searchTerm = BookSearchText.ToLower();
+            var filteredBooks = AvailableBooks.Where(book => 
+                (book.Title != null && book.Title.ToLower().Contains(searchTerm)) || 
+                (book.ISBN != null && book.ISBN.ToLower().Contains(searchTerm))
+            ).ToList();
+
+            FilteredBooks = new ObservableCollection<Book>(filteredBooks);
+        }
+
+        private void FilterMembers()
+        {
+            if (ActiveMembers == null) return;
+            
+            if (string.IsNullOrWhiteSpace(MemberSearchText))
+            {
+                // If no search text, show all active members
+                FilteredMembers = new ObservableCollection<Member>(ActiveMembers);
+                return;
+            }
+
+            var searchTerm = MemberSearchText.ToLower();
+            var filteredMembers = ActiveMembers.Where(member => 
+                (member.FullName != null && member.FullName.ToLower().Contains(searchTerm)) || 
+                (member.MemberCode != null && member.MemberCode.ToLower().Contains(searchTerm))
+            ).ToList();
+
+            FilteredMembers = new ObservableCollection<Member>(filteredMembers);
+        }
 
         private void ExecuteAddNew()
         {
             CurrentBorrowing = new Borrowing
             {
                 BorrowDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(14) // Default loan period: 2 weeks
+                DueDate = DateTime.Now.AddDays(7) // Default loan period: 1 week
             };
             SelectedBook = null;
             SelectedMember = null;
             SelectedBorrowing = null;
+            
+            // Reset search fields
+            BookSearchText = string.Empty;
+            MemberSearchText = string.Empty;
+            
+            // Reset filtered collections
+            FilterBooks();
+            FilterMembers();
         }
 
         private bool CanBorrow()
@@ -217,17 +316,33 @@ namespace SitarLib.ViewModels
         {
             if (SelectedBorrowing != null)
             {
-                DataService.ReturnBook(SelectedBorrowing.Id);
-                
-                string message = "Book returned successfully!";
-                if (SelectedBorrowing.Fine > 0)
+                // Add confirmation dialog first
+                var confirmResult = MessageBox.Show(
+                    "Apakah Anda yakin ingin mengembalikan buku ini?",
+                    "Konfirmasi Pengembalian",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (confirmResult == MessageBoxResult.Yes)
                 {
-                    message += $" A fine of ${SelectedBorrowing.Fine} has been charged for overdue.";
+                    DataService.ReturnBook(SelectedBorrowing.Id);
+
+                    string message = "Book returned successfully!";
+                    // If you want to display fines later, reactivate this section
+                    // if (SelectedBorrowing.Fine > 0)
+                    // {
+                    //     message += $" A fine of ${SelectedBorrowing.Fine} has been charged for overdue.";
+                    // }
+
+                    DialogService.ShowMessage(message);
+                    LoadBorrowings();
+                    LoadAvailableBooks(); // Refresh book stock
                 }
-                
-                DialogService.ShowMessage(message);
-                LoadBorrowings();
-                LoadAvailableBooks(); // Refresh available books as stock changed
+            }
+            else
+            {
+                // If nothing is selected, notify the user
+                DialogService.ShowMessage("Please select a borrowing record to return.");
             }
         }
 

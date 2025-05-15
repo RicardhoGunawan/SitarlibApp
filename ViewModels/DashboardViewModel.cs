@@ -48,6 +48,24 @@ namespace SitarLib.ViewModels
             set => SetProperty(ref _recentBorrowings, value);
         }
 
+        // Properties untuk filter tanggal
+        private DateTime? _startDateFilter;
+        public DateTime? StartDateFilter
+        {
+            get => _startDateFilter;
+            set => SetProperty(ref _startDateFilter, value);
+        }
+
+        private DateTime? _endDateFilter;
+        public DateTime? EndDateFilter
+        {
+            get => _endDateFilter;
+            set => SetProperty(ref _endDateFilter, value);
+        }
+
+        // Koleksi semua peminjaman untuk memudahkan filter
+        private ObservableCollection<Borrowing> _allBorrowings;
+
         // Properti untuk menandakan loading / animasi aktif
         private bool _isBusy;
         public bool IsBusy
@@ -61,6 +79,7 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBorrowingCommand { get; }
         public ICommand RefreshDataCommand { get; }
         public ICommand LogoutCommand { get; }
+        public ICommand ApplyDateFilterCommand { get; }
 
         public DashboardViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService)
             : base(dataService, dialogService, navigationService)
@@ -72,6 +91,11 @@ namespace SitarLib.ViewModels
             NavigateToBorrowingCommand = new RelayCommand(_ => NavigationService.NavigateTo("Borrowing"));
             RefreshDataCommand = new RelayCommand(_ => LoadDashboardData());
             LogoutCommand = new RelayCommand(async _ => await LogoutAsync());
+            ApplyDateFilterCommand = new RelayCommand(_ => ApplyDateFilter());
+
+            // Set default filter tanggal ke satu bulan terakhir
+            EndDateFilter = DateTime.Today;
+            StartDateFilter = DateTime.Today.AddMonths(-1);
 
             LoadDashboardData();
         }
@@ -90,9 +114,50 @@ namespace SitarLib.ViewModels
             ActiveBorrowings = allBorrowings.Count(b => b.ReturnDate == null);
             OverdueBorrowings = overdueBorrowings.Count;
 
-            RecentBorrowings = new ObservableCollection<Borrowing>(
-                allBorrowings.OrderByDescending(b => b.BorrowDate).Take(5)
+            // Simpan semua peminjaman di list terpisah untuk memudahkan filter
+            _allBorrowings = new ObservableCollection<Borrowing>(
+                allBorrowings.OrderByDescending(b => b.BorrowDate)
             );
+
+            // Tampilkan data berdasarkan filter yang aktif
+            ApplyDateFilter();
+
+            IsBusy = false;
+        }
+
+        private void ApplyDateFilter()
+        {
+            IsBusy = true;
+
+            // Cek apakah tanggal valid
+            if (StartDateFilter == null || EndDateFilter == null)
+            {
+                DialogService.ShowError("Invalid Date Range", "Start date must be before or equal to end date.");                IsBusy = false;
+                return;
+            }
+
+            // Pastikan rentang tanggal valid
+            if (StartDateFilter > EndDateFilter)
+            {
+                DialogService.ShowError("Invalid Date Range", "Start date must be before or equal to end date.");                IsBusy = false;
+                return;
+            }
+
+            // Konversi nullable DateTime ke DateTime dengan nilai default jika null
+            DateTime startDate = StartDateFilter ?? DateTime.MinValue;
+            DateTime endDate = EndDateFilter ?? DateTime.MaxValue;
+
+            // Sesuaikan end date untuk mencakup sampai akhir hari
+            endDate = endDate.Date.AddDays(1).AddTicks(-1);
+
+            // Filter data berdasarkan rentang tanggal
+            var filteredBorrowings = _allBorrowings
+                .Where(b => b.BorrowDate >= startDate && b.BorrowDate <= endDate)
+                .OrderByDescending(b => b.BorrowDate)
+                .Take(20) // Batasi jumlah data yang ditampilkan jika diperlukan
+                .ToList();
+
+            RecentBorrowings = new ObservableCollection<Borrowing>(filteredBorrowings);
 
             IsBusy = false;
         }

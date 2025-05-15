@@ -341,6 +341,7 @@
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 
@@ -361,7 +362,56 @@
                             Style="{StaticResource RefreshButtonStyle}"/>
                 </Grid>
                 
-                <DataGrid Grid.Row="1" 
+                <!-- Filter Date Range Controls -->
+                <Grid Grid.Row="1" Margin="0,15,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <!-- "Filter by Date:" -->
+                        <ColumnDefinition Width="10"/>   <!-- Spacer -->
+                        <ColumnDefinition Width="Auto"/> <!-- "From" -->
+                        <ColumnDefinition Width="5"/>    <!-- Spacer -->
+                        <ColumnDefinition Width="Auto"/> <!-- DatePicker From -->
+                        <ColumnDefinition Width="20"/>   <!-- Spacer -->
+                        <ColumnDefinition Width="Auto"/> <!-- "To" -->
+                        <ColumnDefinition Width="5"/>    <!-- Spacer -->
+                        <ColumnDefinition Width="Auto"/> <!-- DatePicker To -->
+                        <ColumnDefinition Width="*" />   <!-- Spacer (flexible) -->
+                        <ColumnDefinition Width="Auto"/> <!-- Button -->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="Filter by Date:"
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock Grid.Column="2"
+                               Text="From"
+                               VerticalAlignment="Center"/>
+
+                    <DatePicker Grid.Column="4"
+                                SelectedDate="{Binding StartDateFilter, Mode=TwoWay}"
+                                Width="120"/>
+
+                    <TextBlock Grid.Column="6"
+                               Text="To"
+                               VerticalAlignment="Center"/>
+
+                    <DatePicker Grid.Column="8"
+                                SelectedDate="{Binding EndDateFilter, Mode=TwoWay}"
+                                Width="120"/>
+
+                    <Button Grid.Column="10"
+                            Content="Apply Filter"
+                            Command="{Binding ApplyDateFilterCommand}"
+                            Padding="10,5"
+                            Style="{StaticResource RefreshButtonStyle}"
+                            HorizontalAlignment="Right">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                <DataGrid Grid.Row="2" 
                           ItemsSource="{Binding RecentBorrowings}"
                           Style="{StaticResource CustomDataGridStyle}">
                     <DataGrid.Columns>
@@ -402,7 +452,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
                         
-                        <DataGridTemplateColumn Header="Status" Width="Auto">
+                        <DataGridTemplateColumn Header="Status" Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="3" Padding="8,3" Margin="5,0" HorizontalAlignment="Center">

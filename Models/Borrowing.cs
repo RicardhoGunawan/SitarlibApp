@@ -9,7 +9,7 @@
         public DateTime DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }
         public string Status { get; set; } // "Borrowed", "Returned", "Overdue"
-        public decimal Fine { get; set; }
+        //public decimal Fine { get; set; }
         
         // Navigation properties
         public Book Book { get; set; }
