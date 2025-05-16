@@ -5,31 +5,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SitarLib.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="900">
+             d:DesignHeight="650" d:DesignWidth="1000">
 
     <UserControl.Resources>
-        <!-- Menggunakan style yang sama dari DashboardView -->
-        <Style x:Key="HeaderButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="8,0" />
-            <Setter Property="Padding" Value="15,8" />
-            <Setter Property="Background" Value="#2980b9" />
-            <Setter Property="Foreground" Value="White" />
+        <!-- Style untuk sidebar menu item -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#CFD8DC" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"
-                                            Margin="{TemplateBinding Padding}" />
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ContentPresenter Grid.Column="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}" />
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#1a6ea8" />
+                                <Setter Property="Background" Value="#2196F3" />
                                 <Setter Property="Cursor" Value="Hand" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -73,26 +82,11 @@
             <Setter Property="BorderThickness" Value="0,0,0,1" />
         </Style>
 
-        <!-- Style untuk form input -->
-        <Style x:Key="FormInputStyle" TargetType="TextBox">
-            <Setter Property="Padding" Value="10,8" />
-            <Setter Property="Margin" Value="0,5,0,15" />
-            <Setter Property="BorderBrush" Value="#DDDDDD" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Background" Value="White" />
-        </Style>
-
-        <!-- Style untuk form label -->
-        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,0,0,5" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#555555" />
-        </Style>
-
-        <!-- Style untuk action buttons -->
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Padding" Value="15,8" />
-            <Setter Property="Margin" Value="5,0" />
+        <!-- Style untuk search button -->
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,5" />
+            <Setter Property="Background" Value="#4CAF50" />
+            <Setter Property="Foreground" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
@@ -103,8 +97,37 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"
-                                            Margin="{TemplateBinding Padding}" />
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3D8B40" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Style untuk action button -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -116,225 +139,417 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <!-- Style untuk TextBox -->
+        <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        
+        <!-- Style untuk form input (extended TextBox) -->
+        <Style x:Key="FormInputStyle" TargetType="TextBox" BasedOn="{StaticResource CustomTextBoxStyle}">
+            <Setter Property="Margin" Value="0,5,0,15" />
+        </Style>
+        
+        <!-- Style untuk label/caption -->
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#555555" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        
+        <!-- Style untuk item menu yang aktif -->
+        <Style x:Key="ActiveMenuItemStyle" TargetType="Border">
+            <Setter Property="Background" Value="#3498db" />
+            <Setter Property="Width" Value="4" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
     </UserControl.Resources>
-
+    
     <Grid>
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#f8f9fa" Offset="0"/>
-                <GradientStop Color="#e9ecef" Offset="1"/>
-            </LinearGradientBrush>
-        </Grid.Background>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Header -->
-        <Border Grid.Row="0" Padding="25,18">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#2980b9" Offset="0"/>
-                    <GradientStop Color="#3498db" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" />
-            </Border.Effect>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="#1565C0">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
-                        <TextBlock.Effect>
-                            <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
-                        </TextBlock.Effect>
-                    </TextBlock>
-                    <TextBlock Text=" | Member Management" FontSize="24" Foreground="White" Margin="5,0,0,0"/>
+                <!-- Logo dan Judul -->
+                <Border Grid.Row="0" Padding="20,25" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Menu Items -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                    <!-- Dashboard -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding NavigateToDashboardCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📊" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Books -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToBookCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📚" />
+                                <TextBlock Grid.Column="1" Text="Books" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Members (Active) -->
+                    <Grid Margin="0,5">
+                        <Border Style="{StaticResource ActiveMenuItemStyle}" />
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Foreground="White"
+                                Background="#42A5F5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="👥" />
+                                <TextBlock Grid.Column="1" Text="Members" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Borrowings -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToBorrowingCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📋" />
+                                <TextBlock Grid.Column="1" Text="Borrowings" />
+                            </Grid>
+                        </Button>
+                    </Grid>
                 </StackPanel>
-
-                <Button Grid.Column="1" 
-                        Content="← Back to Dashboard" 
-                        Command="{Binding NavigateToDashboardCommand}"
-                        Style="{StaticResource HeaderButtonStyle}"/>
             </Grid>
         </Border>
 
-        <!-- Content -->
-        <Grid Grid.Row="1" Margin="25">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="350"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Member List -->
-            <Border Grid.Column="0" 
-                    Background="White" 
-                    BorderBrush="#DDDDDD" 
-                    BorderThickness="1" 
-                    CornerRadius="8" 
-                    Margin="0,0,12,0">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
-                </Border.Effect>
-
-                <Grid Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Search Section -->
-                    <Grid Grid.Row="0" Margin="0,0,0,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox Grid.Column="0" 
-                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"
-                                Margin="0,0,10,0"/>
-
-                        <Button Grid.Column="1"
-                                Content="Search"
-                                Style="{StaticResource ActionButtonStyle}"
-                                Background="#3498db"
-                                Foreground="White"/>
-                    </Grid>
-
-                    <!-- Members DataGrid -->
-                    <DataGrid Grid.Row="1"
-                             ItemsSource="{Binding Members}"
-                             SelectedItem="{Binding SelectedMember}"
-                             Style="{StaticResource CustomDataGridStyle}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                            <DataGridTextColumn Header="Member Code" Binding="{Binding MemberCode}" Width="Auto"/>
-                            <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="*"/>
-                            <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
-                            <DataGridTextColumn Header="Expiry Date" Binding="{Binding MembershipExpiry, StringFormat=d}" Width="Auto"/>
-                            <DataGridTemplateColumn Header="Status" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Border CornerRadius="3" Padding="8,3" Margin="5,0">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="#e8f5e9"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                            <Setter Property="Background" Value="#ffebee"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <TextBlock>
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="Active"/>
-                                                        <Setter Property="Foreground" Value="#388e3c"/>
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#f8f9fa" Offset="0"/>
+                    <GradientStop Color="#e9ecef" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header/Title area -->
+            <Border Grid.Row="0" Padding="25,18" Background="White" BorderThickness="0,0,0,1" BorderBrush="#EEEEEE">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
+                        <TextBlock Text="Members" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
+                        <TextBlock Text="Manage library members" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Content Area -->
+            <Grid Grid.Row="1" Margin="25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="350"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Member List -->
+                <Border Grid.Column="0" 
+                        Background="White" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Margin="0,0,15,0">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                    </Border.Effect>
+                    
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Header and description -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Member List" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
+                                <TextBlock Text="List of all library members" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="↻ Refresh" 
+                                    Command="{Binding RefreshDataCommand}" 
+                                    Style="{StaticResource SearchButtonStyle}"/>
+                        </Grid>
+                        
+                        <!-- Search controls -->
+                        <Grid Grid.Row="1" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox Grid.Column="0" 
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource CustomTextBoxStyle}"/>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="Search" 
+                                    Style="{StaticResource SearchButtonStyle}"/>
+                        </Grid>
+                        
+                        <DataGrid Grid.Row="2" 
+                                  ItemsSource="{Binding Members}" 
+                                  SelectedItem="{Binding SelectedMember}"
+                                  Style="{StaticResource CustomDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="Member Code" Binding="{Binding MemberCode}" Width="Auto">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTextColumn Header="Expiry Date" Binding="{Binding MembershipExpiry, StringFormat=d}" Width="Auto">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                
+                                <DataGridTemplateColumn Header="Status" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="3" Padding="8,3" Margin="5,0" HorizontalAlignment="Center">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#e8f5e9" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                                <Setter Property="Text" Value="Inactive"/>
-                                                                <Setter Property="Foreground" Value="#d32f2f"/>
+                                                                <Setter Property="Background" Value="#ffebee" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </Border>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </Border>
+                                                </Border.Style>
+                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="Active" />
+                                                            <Setter Property="Foreground" Value="#388e3c" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                                    <Setter Property="Text" Value="Inactive" />
+                                                                    <Setter Property="Foreground" Value="#d32f2f" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+                
+                <!-- Member Form -->
+                <Border Grid.Column="1" 
+                        Background="White" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Margin="15,0,0,0">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                    </Border.Effect>
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#3498db" Offset="0"/>
+                                    <GradientStop Color="#2980b9" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        
+                        <ScrollViewer Grid.Row="1" Margin="20" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Member;Add New Member'}" 
+                                           FontWeight="Bold" 
+                                           FontSize="18"
+                                           Foreground="#333333"
+                                           Margin="0,0,0,5"/>
+                                
+                                <TextBlock Text="Fill in the details to create or edit a member" 
+                                           Foreground="#777777" 
+                                           FontSize="12" 
+                                           Margin="0,0,0,20"/>
+                                
+                                <TextBlock Text="Member Code" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.MemberCode, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"
+                                        IsReadOnly="{Binding IsEditing}"/>
 
-            <!-- Member Form -->
-            <Border Grid.Column="1" 
-                    Background="White" 
-                    BorderBrush="#DDDDDD" 
-                    BorderThickness="1" 
-                    CornerRadius="8" 
-                    Margin="12,0,0,0">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
-                </Border.Effect>
+                                <TextBlock Text="Full Name" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.FullName, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
 
-                <ScrollViewer Margin="20" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Member;Add New Member'}"
-                                  FontWeight="Bold"
-                                  FontSize="18"
-                                  Foreground="#333333"
-                                  Margin="0,0,0,20"/>
+                                <TextBlock Text="Address" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.Address, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        Height="60"/>
 
-                        <TextBlock Text="Member Code" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentMember.MemberCode, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"
-                                IsReadOnly="{Binding IsEditing}"/>
+                                <TextBlock Text="Phone Number" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
 
-                        <TextBlock Text="Full Name" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentMember.FullName, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"/>
+                                <TextBlock Text="Email" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.Email, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
 
-                        <TextBlock Text="Address" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentMember.Address, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"
-                                TextWrapping="Wrap"
-                                AcceptsReturn="True"
-                                Height="60"/>
+                                <TextBlock Text="Membership Expiry" Style="{StaticResource FieldLabelStyle}"/>
+                                <DatePicker SelectedDate="{Binding CurrentMember.MembershipExpiry}"
+                                          Margin="0,5,0,15"/>
 
-                        <TextBlock Text="Phone Number" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentMember.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"/>
+                                <CheckBox Content="Is Active"
+                                          IsChecked="{Binding CurrentMember.IsActive}"
+                                          Margin="0,0,0,20"/>
 
-                        <TextBlock Text="Email" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentMember.Email, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource FormInputStyle}"/>
-
-                        <TextBlock Text="Membership Expiry" Style="{StaticResource FormLabelStyle}"/>
-                        <DatePicker SelectedDate="{Binding CurrentMember.MembershipExpiry}"
-                                  Margin="0,5,0,15"/>
-
-                        <CheckBox Content="Is Active"
-                                  IsChecked="{Binding CurrentMember.IsActive}"
-                                  Margin="0,0,0,20"/>
-
-                        <!-- Action Buttons -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="Cancel"
-                                    Command="{Binding CancelCommand}"
-                                    Style="{StaticResource ActionButtonStyle}"
-                                    Background="#95a5a6"/>
-
-                            <Button Content="Delete"
-                                    Command="{Binding DeleteCommand}"
-                                    Style="{StaticResource ActionButtonStyle}"
-                                    Background="#e74c3c"/>
-
-                            <Button Content="Save"
-                                    Command="{Binding SaveCommand}"
-                                    Style="{StaticResource ActionButtonStyle}"
-                                    Background="#2ecc71"/>
-                        </StackPanel>
-
-                        <Button Content="Add New"
-                                Command="{Binding AddNewCommand}"
-                                Style="{StaticResource ActionButtonStyle}"
-                                Background="#3498db"
-                                Margin="0,15,0,0"
-                                HorizontalAlignment="Stretch"/>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+                                <Button Content="Save Member" 
+                                        Command="{Binding SaveCommand}"
+                                        Background="#2ecc71"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
+                                
+                                <TextBlock Text="Member Actions" 
+                                         FontWeight="Bold" 
+                                         FontSize="16"
+                                         Foreground="#333333"
+                                         Margin="0,0,0,15"/>
+                                
+                                <Button Content="Add New Member" 
+                                        Command="{Binding AddNewCommand}"
+                                        Background="#3498db"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Button Content="Delete Selected Member" 
+                                        Command="{Binding DeleteCommand}"
+                                        Background="#e74c3c"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Button Content="Cancel" 
+                                        Command="{Binding CancelCommand}"
+                                        Background="#95a5a6"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

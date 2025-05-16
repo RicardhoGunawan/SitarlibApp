@@ -153,31 +153,60 @@ namespace SitarLib.ViewModels
         public ICommand ReturnCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand NavigateToDashboardCommand { get; }
+        public ICommand NavigateToBookCommand { get; }
+        public ICommand NavigateToMemberCommand { get; }
+        public ICommand NavigateToBorrowingCommand { get; }
+        
+        public ICommand RefreshDataCommand { get; }
         public ICommand SearchBooksCommand { get; }
         public ICommand SearchMembersCommand { get; }
 
-        public BorrowingViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService)
+        public BorrowingViewModel(
+            DataService dataService,
+            DialogService dialogService,
+            NavigationService navigationService,
+            ICommand navigateToMemberCommand,
+            ICommand navigateToBorrowingCommand,
+            ICommand navigateToBookCommand,
+            ICommand refreshDataCommand,
+            ICommand searchBooksCommand,
+            ICommand searchMembersCommand)
             : base(dataService, dialogService, navigationService)
         {
+            // Injected command bindings
+            NavigateToMemberCommand = navigateToMemberCommand;
+            NavigateToBorrowingCommand = navigateToBorrowingCommand;
+            NavigateToBookCommand = navigateToBookCommand;
+            RefreshDataCommand = refreshDataCommand;
+            SearchBooksCommand = searchBooksCommand;
+            SearchMembersCommand = searchMembersCommand;
+
+            // Title and initial state
             Title = "Manage Borrowings - SitarLib";
-            
+
+            // ViewModel commands
             AddNewCommand = new RelayCommand(_ => ExecuteAddNew());
             BorrowCommand = new RelayCommand(_ => ExecuteBorrow(), _ => CanBorrow());
             ReturnCommand = new RelayCommand(_ => ExecuteReturn(), _ => CanReturn());
             CancelCommand = new RelayCommand(_ => ExecuteCancel());
+
+            // Navigation command to dashboard
             NavigateToDashboardCommand = new RelayCommand(_ => NavigationService.NavigateTo("Dashboard"));
-            // No longer need separate search commands since search is integrated into combo boxes
-            
-            // Initialize properties
+
+            // Initialize search/filter state
             BookSearchText = string.Empty;
             MemberSearchText = string.Empty;
-            
             FilterStatus = "All";
+
+            // Load initial data
             LoadBorrowings();
             LoadAvailableBooks();
             LoadActiveMembers();
-            ExecuteAddNew(); // Start with a new borrowing form
+
+            // Prepare form
+            ExecuteAddNew();
         }
+
 
         private void LoadBorrowings()
         {

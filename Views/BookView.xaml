@@ -5,48 +5,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SitarLib.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="900">
-    
+             d:DesignHeight="650" d:DesignWidth="1000">
+
     <UserControl.Resources>
-        <!-- Style untuk header button -->
-        <Style x:Key="HeaderButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="8,0" />
-            <Setter Property="Padding" Value="15,8" />
-            <Setter Property="Background" Value="#2980b9" />
-            <Setter Property="Foreground" Value="White" />
+        <!-- Style untuk sidebar menu item -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#CFD8DC" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                              VerticalAlignment="Center"
-                                              Margin="{TemplateBinding Padding}" />
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ContentPresenter Grid.Column="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}" />
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#1a6ea8" />
+                                <Setter Property="Background" Value="#2196F3" />
                                 <Setter Property="Cursor" Value="Hand" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Style untuk content card -->
-        <Style x:Key="ContentCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#DDDDDD" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
                 </Setter.Value>
             </Setter>
         </Style>
@@ -86,42 +82,42 @@
             <Setter Property="BorderThickness" Value="0,0,0,1" />
         </Style>
 
-        <!-- Style untuk TextBox -->
-        <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Padding" Value="10,8" />
-            <Setter Property="Margin" Value="0,0,0,15" />
-            <Setter Property="BorderBrush" Value="#DDDDDD" />
-            <Setter Property="BorderThickness" Value="1" />
+        <!-- Style untuk search button -->
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,5" />
+            <Setter Property="Background" Value="#4CAF50" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                Background="{TemplateBinding Background}"
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
-                            <ScrollViewer x:Name="PART_ContentHost" 
-                                          Padding="{TemplateBinding Padding}" 
-                                          VerticalContentAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3D8B40" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!-- Style untuk TextBox label -->
-        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,0,0,5" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#555555" />
-        </Style>
-
-        <!-- Style untuk action buttons -->
+        
+        <!-- Style untuk action button -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Padding" Value="15,8" />
-            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="Foreground" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="White" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -144,140 +140,216 @@
             </Setter>
         </Style>
         
-        <!-- Style untuk search button -->
-        <Style x:Key="SearchButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+        <!-- Style untuk TextBox -->
+        <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        
+        <!-- Style untuk form input (extended TextBox) -->
+        <Style x:Key="FormInputStyle" TargetType="TextBox" BasedOn="{StaticResource CustomTextBoxStyle}">
+            <Setter Property="Margin" Value="0,5,0,15" />
+        </Style>
+        
+        <!-- Style untuk label/caption -->
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#555555" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        
+        <!-- Style untuk item menu yang aktif -->
+        <Style x:Key="ActiveMenuItemStyle" TargetType="Border">
             <Setter Property="Background" Value="#3498db" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        
-        <!-- Style untuk cancel button -->
-        <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#95a5a6" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-        
-        <!-- Style untuk delete button -->
-        <Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#e74c3c" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-        
-        <!-- Style untuk save button -->
-        <Style x:Key="SaveButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#2ecc71" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-        
-        <!-- Style untuk add new button -->
-        <Style x:Key="AddNewButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#3498db" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Margin" Value="0,15,0,0" />
+            <Setter Property="Width" Value="4" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>
     </UserControl.Resources>
     
     <Grid>
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#f8f9fa" Offset="0"/>
-                <GradientStop Color="#e9ecef" Offset="1"/>
-            </LinearGradientBrush>
-        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <!-- Header -->
-        <Border Grid.Row="0" Padding="25,18">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#2980b9" Offset="0"/>
-                    <GradientStop Color="#3498db" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" />
-            </Border.Effect>
-            
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="#1565C0">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
-                        <TextBlock.Effect>
-                            <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
-                        </TextBlock.Effect>
-                    </TextBlock>
-                    <TextBlock Text=" | Book Management" FontSize="24" Foreground="White" Margin="5,0,0,0"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Logo dan Judul -->
+                <Border Grid.Row="0" Padding="20,25" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Menu Items -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                    <!-- Dashboard -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding NavigateToDashboardCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📊" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Books (Active) -->
+                    <Grid Margin="0,5">
+                        <Border Style="{StaticResource ActiveMenuItemStyle}" />
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Foreground="White"
+                                Background="#42A5F5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📚" />
+                                <TextBlock Grid.Column="1" Text="Books" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Members -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToMemberCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="👥" />
+                                <TextBlock Grid.Column="1" Text="Members" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Borrowings -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToBorrowingCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📋" />
+                                <TextBlock Grid.Column="1" Text="Borrowings" />
+                            </Grid>
+                        </Button>
+                    </Grid>
                 </StackPanel>
-                
-                <Button Grid.Column="1" 
-                        Content="← Back to Dashboard" 
-                        Command="{Binding NavigateToDashboardCommand}"
-                        Style="{StaticResource HeaderButtonStyle}"/>
             </Grid>
         </Border>
-        
-        <!-- Content -->
-        <Grid Grid.Row="1" Margin="25">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="350"/>
-            </Grid.ColumnDefinitions>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#f8f9fa" Offset="0"/>
+                    <GradientStop Color="#e9ecef" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
             
-            <!-- Book List -->
-            <Border Grid.Column="0" 
-                    Style="{StaticResource ContentCardStyle}"
-                    Margin="0,0,12,0">
-                <Grid Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header/Title area -->
+            <Border Grid.Row="0" Padding="25,18" Background="White" BorderThickness="0,0,0,1" BorderBrush="#EEEEEE">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     
-                    <Grid Grid.Row="0" Margin="0,0,0,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <Border Grid.Column="0" 
-                                BorderBrush="#DDDDDD" 
-                                BorderThickness="1" 
-                                CornerRadius="4" 
-                                Margin="0,0,10,0">
-                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="10,8"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     VerticalContentAlignment="Center"/>
-                        </Border>
-                        
-                        <Button Grid.Column="1" 
-                                Content="🔍 Search" 
-                                Style="{StaticResource SearchButtonStyle}"/>
-                    </Grid>
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
+                        <TextBlock Text="Books" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
+                        <TextBlock Text="Manage library books" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Content Area -->
+            <Grid Grid.Row="1" Margin="25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="350"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Book List -->
+                <Border Grid.Column="0" 
+                        Background="White" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Margin="0,0,15,0">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                    </Border.Effect>
                     
-                    <Grid Grid.Row="1">
+                    <Grid Margin="20">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         
-                        <TextBlock Grid.Row="0" 
-                                   Text="Book Catalog" 
-                                   FontWeight="Bold" 
-                                   FontSize="16" 
-                                   Foreground="#333333" 
-                                   Margin="0,0,0,10"/>
+                        <!-- Header and description -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Book List" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
+                                <TextBlock Text="List of all library books" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="↻ Refresh" 
+                                    Command="{Binding RefreshDataCommand}" 
+                                    Style="{StaticResource SearchButtonStyle}"/>
+                        </Grid>
                         
-                        <DataGrid Grid.Row="1" 
+                        <!-- Search controls -->
+                        <Grid Grid.Row="1" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox Grid.Column="0" 
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource CustomTextBoxStyle}"/>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="Search" 
+                                    Style="{StaticResource SearchButtonStyle}"/>
+                        </Grid>
+                        
+                        <DataGrid Grid.Row="2" 
                                   ItemsSource="{Binding Books}" 
                                   SelectedItem="{Binding SelectedBook}"
                                   Style="{StaticResource CustomDataGridStyle}">
@@ -342,112 +414,114 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
-                </Grid>
-            </Border>
-            
-            <!-- Book Form -->
-            <Border Grid.Column="1" 
-                    Style="{StaticResource ContentCardStyle}"
-                    Margin="12,0,0,0">
-                <ScrollViewer Margin="20" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <Border Background="#f0f6fb" 
-                                BorderBrush="#DDDDDD" 
-                                BorderThickness="0,0,0,1" 
-                                Padding="0,0,0,15" 
-                                Margin="0,0,0,20">
-                            <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Book;Add New Book'}" 
-                                       FontWeight="Bold" 
-                                       FontSize="18"
-                                       Foreground="#333333"/>
-                        </Border>
+                </Border>
+                
+                <!-- Book Form -->
+                <Border Grid.Column="1" 
+                        Background="White" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Margin="15,0,0,0">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                    </Border.Effect>
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         
-                        <TextBlock Text="ISBN" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.ISBN, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
+                        <Rectangle Grid.Row="0" Height="5" VerticalAlignment="Top">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#3498db" Offset="0"/>
+                                    <GradientStop Color="#2980b9" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
                         
-                        <TextBlock Text="Title" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Title, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Author" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Author, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Publisher" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Publisher, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Publication Year" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.PublicationYear, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Category" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Category, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Stock" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Stock, UpdateSourceTrigger=PropertyChanged}" 
-                                Style="{StaticResource FormTextBoxStyle}"/>
-                        
-                        <TextBlock Text="Description" Style="{StaticResource FormLabelStyle}"/>
-                        <TextBox Text="{Binding CurrentBook.Description, UpdateSourceTrigger=PropertyChanged}" 
-                                Padding="10,8" 
-                                TextWrapping="Wrap"
-                                AcceptsReturn="True"
-                                Height="80"
-                                VerticalScrollBarVisibility="Auto"
-                                Margin="0,0,0,25"
-                                BorderThickness="1"
-                                BorderBrush="#DDDDDD">
-                            <TextBox.Template>
-                                <ControlTemplate TargetType="TextBox">
-                                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
-                                            BorderThickness="{TemplateBinding BorderThickness}" 
-                                            Background="{TemplateBinding Background}"
-                                            CornerRadius="4">
-                                        <ScrollViewer x:Name="PART_ContentHost" 
-                                                    Padding="{TemplateBinding Padding}" />
-                                    </Border>
-                                </ControlTemplate>
-                            </TextBox.Template>
-                        </TextBox>
-                        
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            
-                            <Border Grid.Row="0" 
-                                    Background="#f8f9fa" 
-                                    BorderBrush="#EEEEEE" 
-                                    BorderThickness="0,1,0,0" 
-                                    Padding="0,20,0,0" 
-                                    Margin="0,5,0,15">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button Content="Cancel" 
-                                            Command="{Binding CancelCommand}"
-                                            Style="{StaticResource CancelButtonStyle}"/>
-                                    
-                                    <Button Content="Delete" 
-                                            Command="{Binding DeleteCommand}"
-                                            Style="{StaticResource DeleteButtonStyle}"/>
-                                    
-                                    <Button Content="Save" 
-                                            Command="{Binding SaveCommand}"
-                                            Style="{StaticResource SaveButtonStyle}"/>
-                                </StackPanel>
-                            </Border>
-                            
-                            <Button Grid.Row="1" 
-                                    Content="+ Add New Book" 
-                                    Command="{Binding AddNewCommand}"
-                                    Style="{StaticResource AddNewButtonStyle}"/>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+                        <ScrollViewer Grid.Row="1" Margin="20" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="{Binding IsEditing, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Edit Book;Add New Book'}" 
+                                           FontWeight="Bold" 
+                                           FontSize="18"
+                                           Foreground="#333333"
+                                           Margin="0,0,0,5"/>
+                                
+                                <TextBlock Text="Fill in the details to create or edit a book" 
+                                           Foreground="#777777" 
+                                           FontSize="12" 
+                                           Margin="0,0,0,20"/>
+                                
+                                <TextBlock Text="ISBN" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.ISBN, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Title" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Title, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Author" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Author, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Publisher" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Publisher, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Publication Year" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.PublicationYear, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Category" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Category, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Stock" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Stock, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Description" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentBook.Description, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        Height="80"/>
+
+                                <Button Content="Save Book" 
+                                        Command="{Binding SaveCommand}"
+                                        Background="#2ecc71"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
+                                
+                                <TextBlock Text="Book Actions" 
+                                         FontWeight="Bold" 
+                                         FontSize="16"
+                                         Foreground="#333333"
+                                         Margin="0,0,0,15"/>
+                                
+                                <Button Content="Add New Book" 
+                                        Command="{Binding AddNewCommand}"
+                                        Background="#3498db"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Button Content="Delete Selected Book" 
+                                        Command="{Binding DeleteCommand}"
+                                        Background="#e74c3c"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                                
+                                <Button Content="Cancel" 
+                                        Command="{Binding CancelCommand}"
+                                        Background="#95a5a6"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

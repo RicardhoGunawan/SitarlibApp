@@ -73,10 +73,16 @@ namespace SitarLib.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand NavigateToDashboardCommand { get; }
+        public ICommand NavigateToBookCommand { get; }
+        public ICommand NavigateToMemberCommand { get; }
+        public ICommand NavigateToBorrowingCommand { get; }
 
-        public MemberViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService)
+        public MemberViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService, ICommand navigateToBookCommand, ICommand navigateToMemberCommand, ICommand navigateToBorrowingCommand)
             : base(dataService, dialogService, navigationService)
         {
+            NavigateToBookCommand = navigateToBookCommand;
+            NavigateToMemberCommand = navigateToMemberCommand;
+            NavigateToBorrowingCommand = navigateToBorrowingCommand;
             Title = "Manage Members - SitarLib";
             
             AddNewCommand = new RelayCommand(_ => ExecuteAddNew());
