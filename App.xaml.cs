@@ -5,6 +5,7 @@ using SitarLib.Helpers;
 using SitarLib.Services;
 using SitarLib.ViewModels;
 using SitarLib.Views;
+using RelayCommand = SitarLib.Helpers.RelayCommand;
 
 namespace SitarLib
 {
@@ -24,6 +25,8 @@ namespace SitarLib
             var navigateToBookCommand = new RelayCommand(_ => navigationService.NavigateTo("Book"));
             var navigateToMemberCommand = new RelayCommand(_ => navigationService.NavigateTo("Member"));
             var navigateToBorrowingCommand = new RelayCommand(_ => navigationService.NavigateTo("Borrowing"));
+            var navigateToReportCommand = new RelayCommand(_ => navigationService.NavigateTo("Report"));
+
 
             var refreshDataCommand = new RelayCommand(_ => { /* TODO: define global refresh logic */ });
             var searchBooksCommand = new RelayCommand(_ => { /* TODO: define global book search logic */ });
@@ -40,7 +43,8 @@ namespace SitarLib
                     navigationService,
                     navigateToBookCommand,
                     navigateToMemberCommand,
-                    navigateToBorrowingCommand
+                    navigateToBorrowingCommand,
+                    navigateToReportCommand
                 )
             );
 
@@ -51,7 +55,8 @@ namespace SitarLib
                     navigationService,
                     navigateToBookCommand,
                     navigateToMemberCommand,
-                    navigateToBorrowingCommand
+                    navigateToBorrowingCommand,
+                    navigateToReportCommand
                 )
             );
 
@@ -66,7 +71,15 @@ namespace SitarLib
                     navigateToBookCommand,
                     refreshDataCommand,
                     searchBooksCommand,
-                    searchMembersCommand
+                    searchMembersCommand,
+                    navigateToReportCommand
+                )
+            );
+            navigationService.Register("Report", () =>
+                new ReportViewModel(
+                    dataService,
+                    dialogService,
+                    navigationService
                 )
             );
 

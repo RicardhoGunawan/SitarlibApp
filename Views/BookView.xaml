@@ -257,6 +257,19 @@
                             </Grid>
                         </Button>
                     </Grid>
+                    <!-- Report -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📈" />
+                                <TextBlock Grid.Column="1" Text="Reports" />
+                            </Grid>
+                        </Button>
+                    </Grid>
                 </StackPanel>
             </Grid>
         </Border>

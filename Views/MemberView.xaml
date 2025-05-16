@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SitarLib.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="1000">
+             d:DesignHeight="800" d:DesignWidth="1200">
 
     <UserControl.Resources>
         <!-- Style untuk sidebar menu item -->
@@ -254,6 +254,19 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="📋" />
                                 <TextBlock Grid.Column="1" Text="Borrowings" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                    <!-- Report -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📈" />
+                                <TextBlock Grid.Column="1" Text="Reports" />
                             </Grid>
                         </Button>
                     </Grid>

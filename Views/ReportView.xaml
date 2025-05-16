@@ -1,0 +1,632 @@
+﻿<UserControl x:Class="SitarLib.Views.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SitarLib.Views"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    
+    <UserControl.Resources>
+        <!-- Style untuk sidebar menu item -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#CFD8DC" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ContentPresenter Grid.Column="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2196F3" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk DataGrid -->
+        <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
+            <Setter Property="CanUserReorderColumns" Value="False" />
+            <Setter Property="CanUserResizeRows" Value="False" />
+            <Setter Property="CanUserSortColumns" Value="True" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="GridLinesVisibility" Value="None" />
+            <Setter Property="AlternatingRowBackground" Value="#F9F9F9" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="RowHeight" Value="35" />
+        </Style>
+
+        <!-- Style untuk header DataGrid -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f0f6fb" />
+            <Setter Property="Foreground" Value="#333333" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk rows DataGrid -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="BorderBrush" Value="#EEEEEE" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+
+        <!-- Style untuk search button -->
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,5" />
+            <Setter Property="Background" Value="#4CAF50" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3D8B40" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk action button -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style untuk ComboBox -->
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Style untuk TextBox -->
+        <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Style untuk DatePicker -->
+        <Style x:Key="CustomDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Margin" Value="0,0,0,15" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Style untuk label/caption -->
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#555555" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+
+        <!-- Style untuk item menu yang aktif -->
+        <Style x:Key="ActiveMenuItemStyle" TargetType="Border">
+            <Setter Property="Background" Value="#3498db" />
+            <Setter Property="Width" Value="4" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+            
+        <!-- Additional styles for charts -->
+        <Style x:Key="ChartTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="Foreground" Value="#333333" />
+        </Style>
+        
+        <Style x:Key="ChartCardStyle" TargetType="Border">
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="Height" Value="300" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="DataCardStyle" TargetType="Border">
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="Height" Value="300" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#DDDDDD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ListItemStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,5" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="#1565C0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Logo dan Judul -->
+                <Border Grid.Row="0" Padding="20,25" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Menu Items -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                    <!-- Dashboard -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding NavigateToDashboardCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📊" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Books -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToBookCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📚" />
+                                <TextBlock Grid.Column="1" Text="Books" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Members -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToMemberCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="👥" />
+                                <TextBlock Grid.Column="1" Text="Members" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+
+                    <!-- Borrowings -->
+                    <Grid Margin="0,5">
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Command="{Binding NavigateToBorrowingCommand}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📋" />
+                                <TextBlock Grid.Column="1" Text="Borrowings" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                    
+                    <!-- Reports (Active) -->
+                    <Grid Margin="0,5">
+                        <Border Style="{StaticResource ActiveMenuItemStyle}" />
+                        <Button Style="{StaticResource SidebarButtonStyle}" 
+                                Foreground="White" 
+                                Background="#42A5F5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="📈" />
+                                <TextBlock Grid.Column="1" Text="Reports" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#f8f9fa" Offset="0"/>
+                    <GradientStop Color="#e9ecef" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header/Title area -->
+            <Border Grid.Row="0" Padding="25,18" Background="White" BorderThickness="0,0,0,1" BorderBrush="#EEEEEE">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
+                        <TextBlock Text="Library Reports" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
+                        <TextBlock Text="Visual insights into library activities and statistics" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Content Area -->
+            <Grid Grid.Row="1" Margin="25">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Filter Controls -->
+                <Border Grid.Row="0" 
+                        Background="White" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Padding="20"
+                        Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2" />
+                    </Border.Effect>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" 
+                                   Text="Report Period:" 
+                                   FontWeight="SemiBold" 
+                                   VerticalAlignment="Center"/>
+                        
+                        <TextBlock Grid.Column="2" 
+                                   Text="From" 
+                                   VerticalAlignment="Center"/>
+                        
+                        <DatePicker Grid.Column="4" 
+                                    SelectedDate="{Binding StartDate}" 
+                                    Width="130" 
+                                    Padding="5"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="#DDDDDD"/>
+                        
+                        <TextBlock Grid.Column="6" 
+                                   Text="To" 
+                                   VerticalAlignment="Center"/>
+                        
+                        <DatePicker Grid.Column="7" 
+                                    SelectedDate="{Binding EndDate}" 
+                                    Width="130" 
+                                    Padding="5"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="#DDDDDD" 
+                                    HorizontalAlignment="Left"/>
+                        
+                        <Button Grid.Column="8" 
+                                Content="Apply Filter" 
+                                Command="{Binding ApplyFilterCommand}" 
+                                Style="{StaticResource SearchButtonStyle}"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Charts and Report Content -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- First Row of Charts -->
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Borrowings by Month -->
+                            <Border Grid.Column="0" Style="{StaticResource ChartCardStyle}" Margin="0,0,10,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Borrowings by Month" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <lvc:CartesianChart Grid.Row="1" Series="{Binding BorrowingsByMonthSeries}" LegendLocation="None">
+                                        <lvc:CartesianChart.AxisX>
+                                            <lvc:Axis Labels="{Binding BorrowingsByMonthLabels}" LabelsRotation="45">
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator Step="1"/>
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisX>
+                                        <lvc:CartesianChart.AxisY>
+                                            <lvc:Axis LabelFormatter="{Binding BorrowingsByMonthFormatter}">
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator/>
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisY>
+                                    </lvc:CartesianChart>
+                                </Grid>
+                            </Border>
+                            
+                            <!-- Book Categories -->
+                            <Border Grid.Column="1" Style="{StaticResource ChartCardStyle}" Margin="10,0,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Book Categories Distribution" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <lvc:PieChart Grid.Row="1" Series="{Binding BookCategoriesSeries}" LegendLocation="Right" InnerRadius="50">
+                                        <lvc:PieChart.ChartLegend>
+                                            <lvc:DefaultLegend BulletSize="10"/>
+                                        </lvc:PieChart.ChartLegend>
+                                    </lvc:PieChart>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Second Row of Charts -->
+                        <Grid Grid.Row="1" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Borrowing Status -->
+                            <Border Grid.Column="0" Style="{StaticResource ChartCardStyle}" Margin="0,0,10,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Borrowing Status" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <lvc:PieChart Grid.Row="1" Series="{Binding BorrowingStatusSeries}" LegendLocation="Right" InnerRadius="50">
+                                        <lvc:PieChart.ChartLegend>
+                                            <lvc:DefaultLegend BulletSize="10"/>
+                                        </lvc:PieChart.ChartLegend>
+                                    </lvc:PieChart>
+                                </Grid>
+                            </Border>
+                            
+                            <!-- Daily Activity -->
+                            <Border Grid.Column="1" Style="{StaticResource ChartCardStyle}" Margin="10,0,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Daily Activity" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <lvc:CartesianChart Grid.Row="1" Series="{Binding DailyActivitySeries}" LegendLocation="Top">
+                                        <lvc:CartesianChart.AxisX>
+                                            <lvc:Axis Labels="{Binding DailyActivityLabels}">
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator Step="1"/>
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisX>
+                                        <lvc:CartesianChart.AxisY>
+                                            <lvc:Axis LabelFormatter="{Binding DailyActivityFormatter}">
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator/>
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisY>
+                                    </lvc:CartesianChart>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Third Row - Data Lists -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Most Borrowed Books -->
+                            <Border Grid.Column="0" Style="{StaticResource DataCardStyle}" Margin="0,0,10,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Most Borrowed Books" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <ListView Grid.Row="1" ItemsSource="{Binding MostBorrowedBooks}" BorderThickness="0" Background="Transparent">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBlock Text="{Binding Title}" Style="{StaticResource ListItemStyle}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Author}" Style="{StaticResource ListItemStyle}" FontSize="12" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding BorrowCount, StringFormat='Borrowed {0} times'}" Style="{StaticResource ListItemStyle}" FontSize="12" Foreground="#666"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
+                            </Border>
+                            
+                            <!-- Most Active Members -->
+                            <Border Grid.Column="1" Style="{StaticResource DataCardStyle}" Margin="5,0,5,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Most Active Members" Style="{StaticResource ChartTitleStyle}"/>
+                                    
+                                    <ListView Grid.Row="1" ItemsSource="{Binding MostActiveMembers}" BorderThickness="0" Background="Transparent">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBlock Text="{Binding FullName}" Style="{StaticResource ListItemStyle}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding BorrowCount, StringFormat='{}{0} borrowings'}"
+                                                               Style="{StaticResource ListItemStyle}" 
+                                                               FontSize="12" 
+                                                               Foreground="#666"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
+                            </Border>
+                            
+                            <!-- Recent Borrowings -->
+                            <Border Grid.Column="2" Style="{StaticResource DataCardStyle}" Margin="10,0,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                
+                                    <TextBlock Grid.Row="0" Text="Recent Borrowings" Style="{StaticResource ChartTitleStyle}"/>
+                                
+                                    <ListView Grid.Row="1" ItemsSource="{Binding RecentBorrowings}" BorderThickness="0">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="0,5">
+                                                    <TextBlock Text="{Binding Book.Title}" Style="{StaticResource ListItemStyle}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Member.FullName}" Style="{StaticResource ListItemStyle}" FontSize="12" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding BorrowDate, StringFormat='Borrowed on {0:d}'}" Style="{StaticResource ListItemStyle}" FontSize="12" Foreground="#666"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Grid></Grid>
+</UserControl>

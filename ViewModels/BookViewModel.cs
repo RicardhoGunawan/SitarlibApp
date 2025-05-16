@@ -77,13 +77,16 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBookCommand { get; }
         public ICommand NavigateToMemberCommand { get; }
         public ICommand NavigateToBorrowingCommand { get; }
+        public ICommand NavigateToReportCommand { get; } // Ditambahkan
 
-        public BookViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService, ICommand navigateToBookCommand, ICommand navigateToMemberCommand, ICommand navigateToBorrowingCommand)
+
+        public BookViewModel(DataService dataService, DialogService dialogService, NavigationService navigationService, ICommand navigateToBookCommand, ICommand navigateToMemberCommand, ICommand navigateToBorrowingCommand, ICommand navigateToReportCommand)
             : base(dataService, dialogService, navigationService)
         {
             NavigateToBookCommand = navigateToBookCommand;
             NavigateToMemberCommand = navigateToMemberCommand;
             NavigateToBorrowingCommand = navigateToBorrowingCommand;
+            NavigateToReportCommand = navigateToReportCommand;
             Title = "Manage Books - SitarLib";
             
             AddNewCommand = new RelayCommand(_ => ExecuteAddNew());

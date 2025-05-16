@@ -22,5 +22,17 @@ namespace SitarLib.Views
                 }
             };
         }
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(PasswordBox.Password))
+            {
+                PasswordPlaceholder.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                PasswordPlaceholder.Visibility = Visibility.Collapsed;
+            }
+        }
+
     }
 }

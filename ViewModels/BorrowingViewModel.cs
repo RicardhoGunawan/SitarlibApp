@@ -156,6 +156,8 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBookCommand { get; }
         public ICommand NavigateToMemberCommand { get; }
         public ICommand NavigateToBorrowingCommand { get; }
+        public ICommand NavigateToReportCommand { get; } // Ditambahkan
+
         
         public ICommand RefreshDataCommand { get; }
         public ICommand SearchBooksCommand { get; }
@@ -170,7 +172,7 @@ namespace SitarLib.ViewModels
             ICommand navigateToBookCommand,
             ICommand refreshDataCommand,
             ICommand searchBooksCommand,
-            ICommand searchMembersCommand)
+            ICommand searchMembersCommand, ICommand navigateToReportCommand)
             : base(dataService, dialogService, navigationService)
         {
             // Injected command bindings
@@ -180,6 +182,7 @@ namespace SitarLib.ViewModels
             RefreshDataCommand = refreshDataCommand;
             SearchBooksCommand = searchBooksCommand;
             SearchMembersCommand = searchMembersCommand;
+            NavigateToReportCommand = navigateToReportCommand;
 
             // Title and initial state
             Title = "Manage Borrowings - SitarLib";

@@ -77,6 +77,7 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBookCommand { get; }
         public ICommand NavigateToMemberCommand { get; }
         public ICommand NavigateToBorrowingCommand { get; }
+        public ICommand NavigateToReportCommand { get; } // Ditambahkan
         public ICommand RefreshDataCommand { get; }
         public ICommand LogoutCommand { get; }
         public ICommand ApplyDateFilterCommand { get; }
@@ -86,9 +87,11 @@ namespace SitarLib.ViewModels
         {
             Title = "Dashboard - SitarLib";
 
+            // Initialize commands
             NavigateToBookCommand = new RelayCommand(_ => NavigationService.NavigateTo("Book"));
             NavigateToMemberCommand = new RelayCommand(_ => NavigationService.NavigateTo("Member"));
             NavigateToBorrowingCommand = new RelayCommand(_ => NavigationService.NavigateTo("Borrowing"));
+            NavigateToReportCommand = new RelayCommand(_ => NavigationService.NavigateTo("Report")); // Ditambahkan
             RefreshDataCommand = new RelayCommand(_ => LoadDashboardData());
             LogoutCommand = new RelayCommand(async _ => await LogoutAsync());
             ApplyDateFilterCommand = new RelayCommand(_ => ApplyDateFilter());
