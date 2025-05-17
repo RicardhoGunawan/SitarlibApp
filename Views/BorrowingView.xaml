@@ -10,23 +10,25 @@
     <UserControl.Resources>
         <!-- Style untuk sidebar menu item -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0,2" />
-            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Margin" Value="10,4" />
+            <Setter Property="Padding" Value="15,12" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="#CFD8DC" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontWeight" Value="Medium" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 
@@ -40,6 +42,11 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#2196F3" />
                                 <Setter Property="Cursor" Value="Hand" />
+                                <Setter TargetName="ButtonBorder" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.3" Color="#000000" />
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -49,8 +56,11 @@
 
         <!-- Style untuk logout button -->
         <!--<Style x:Key="LogoutButtonStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
-            <Setter Property="Foreground" Value="#fff" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Background" Value="#E53935" />
+            <Setter Property="Margin" Value="15,10" />
         </Style>-->
+
 
         <!-- Style untuk DataGrid -->
         <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
@@ -176,21 +186,56 @@
         </Style>
         
         <!-- Style untuk item menu yang aktif -->
-        <Style x:Key="ActiveMenuItemStyle" TargetType="Border">
-            <Setter Property="Background" Value="#3498db" />
-            <Setter Property="Width" Value="4" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
+        <Style x:Key="ActiveMenuItemStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
+            <Setter Property="Background" Value="#2196F3" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ContentPresenter Grid.Column="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E88E5" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="240" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <!-- Sidebar Navigation -->
-        <Border Grid.Column="0" Background="#1565C0">
+        <!-- Sidebar Navigation - Background dengan gradient untuk tampilan yang lebih modern -->
+        <Border Grid.Column="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#1565C0" Offset="0"/>
+                    <GradientStop Color="#0D47A1" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -198,10 +243,11 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Logo dan Judul -->
-                <Border Grid.Row="0" Padding="20,25" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
+                <!-- App Logo and Title - Dengan efek bayangan dan logo -->
+                <Border Grid.Row="0" Padding="15,20" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                        <Image Source="/Assets/SMAN-TKN-PABAR.ico" Width="70" Height="70" Margin="0,0,10,0"/>
+                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White" VerticalAlignment="Center">
                             <TextBlock.Effect>
                                 <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
                             </TextBlock.Effect>
@@ -209,83 +255,70 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Menu Items -->
-                <StackPanel Grid.Row="1" Margin="0,20,0,0">
-                    <!-- Dashboard -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}"
-                                Command="{Binding NavigateToDashboardCommand}">
+                <!-- Menu Items - Dengan efek hover yang lebih menarik dan sudut yang dibulatkan -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,15,0,0">
+                    <StackPanel>
+                        <!-- Dashboard - Menu yang aktif -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToDashboardCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📊" />
-                                <TextBlock Grid.Column="1" Text="Dashboard" />
+                                <TextBlock Grid.Column="0" Text="🏠" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" FontWeight="SemiBold" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Books -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" 
-                                Command="{Binding NavigateToBookCommand}">
+                        <!-- Books -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToBookCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📚" />
-                                <TextBlock Grid.Column="1" Text="Books" />
+                                <TextBlock Grid.Column="0" Text="📚" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Buku" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Members -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" 
-                                Command="{Binding NavigateToMemberCommand}">
+                        <!-- Members -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToMemberCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="👥" />
-                                <TextBlock Grid.Column="1" Text="Members" />
+                                <TextBlock Grid.Column="0" Text="👥" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Anggota" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Borrowings (Active) -->
-                    <Grid Margin="0,5">
-                        <Border Style="{StaticResource ActiveMenuItemStyle}" />
-                        <Button Style="{StaticResource SidebarButtonStyle}" 
-                                Foreground="White"
-                                Background="#42A5F5">
+                        <!-- Borrowings -->
+                        <Button Style="{StaticResource ActiveMenuItemStyle}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📋" />
-                                <TextBlock Grid.Column="1" Text="Borrowings" />
+                                <TextBlock Grid.Column="0" Text="📋" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Peminjaman" />
                             </Grid>
                         </Button>
-                    </Grid>
-                    <!-- Report -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}">
+
+                        <!-- Report -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📈" />
-                                <TextBlock Grid.Column="1" Text="Reports" />
+                                <TextBlock Grid.Column="0" Text="📈" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Laporan" />
                             </Grid>
                         </Button>
-                    </Grid>
-                </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Border>
 
@@ -313,8 +346,8 @@
                     </Grid.ColumnDefinitions>
                     
                     <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
-                        <TextBlock Text="Borrowings" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
-                        <TextBlock Text="Manage all borrowing transactions" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
+                        <TextBlock Text="Piminjaman" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
+                        <TextBlock Text="Kelola semua transaksi peminjaman" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -352,8 +385,8 @@
                             </Grid.ColumnDefinitions>
                             
                             <StackPanel Grid.Column="0" Orientation="Vertical">
-                                <TextBlock Text="Borrowing List" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
-                                <TextBlock Text="List of all borrowing transactions" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
+                                <TextBlock Text="Daftar Peminjaman" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
+                                <TextBlock Text="Daftar semua transaksi peminjaman" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
                             </StackPanel>
                             
                             <Button Grid.Column="1" 
@@ -516,19 +549,19 @@
                         
                         <ScrollViewer Grid.Row="1" Margin="20" VerticalScrollBarVisibility="Auto">
                             <StackPanel>
-                                <TextBlock Text="New Borrowing" 
+                                <TextBlock Text="Pinjaman Baru" 
                                            FontWeight="Bold" 
                                            FontSize="18"
                                            Foreground="#333333"
                                            Margin="0,0,0,5"/>
                                 
-                                <TextBlock Text="Fill in the details to create a new borrowing entry" 
+                                <TextBlock Text="Isi rincian untuk membuat pinjaman baru" 
                                            Foreground="#777777" 
                                            FontSize="12" 
                                            Margin="0,0,0,20"/>
                                 
                                 <!-- Book Selection with Integrated Search -->
-                                <TextBlock Text="Select Book (Type to search by Title or ISBN)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Pilih Buku (Type to search by Title or ISBN)" Style="{StaticResource FieldLabelStyle}"/>
                                 <ComboBox ItemsSource="{Binding FilteredBooks}"
                                           SelectedItem="{Binding SelectedBook}"
                                           Text="{Binding BookSearchText, UpdateSourceTrigger=PropertyChanged}"
@@ -539,7 +572,7 @@
                                           Style="{StaticResource CustomComboBoxStyle}"/>
                                 
                                 <!-- Member Selection with Integrated Search -->
-                                <TextBlock Text="Select Member (Type to search by Name or Code)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Pilih Anggota (Type to search by Name or Code)" Style="{StaticResource FieldLabelStyle}"/>
                                 <ComboBox ItemsSource="{Binding FilteredMembers}"
                                           SelectedItem="{Binding SelectedMember}"
                                           Text="{Binding MemberSearchText, UpdateSourceTrigger=PropertyChanged}"
@@ -549,34 +582,34 @@
                                           StaysOpenOnEdit="True"
                                           Style="{StaticResource CustomComboBoxStyle}"/>
                                 
-                                <TextBlock Text="Borrow Date" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Tanggal Peminjaman" Style="{StaticResource FieldLabelStyle}"/>
                                 <DatePicker SelectedDate="{Binding CurrentBorrowing.BorrowDate}" 
                                             IsEnabled="False"
                                             Style="{StaticResource CustomDatePickerStyle}"/>
                                 
-                                <TextBlock Text="Due Date" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Tenggat waktu" Style="{StaticResource FieldLabelStyle}"/>
                                 <DatePicker SelectedDate="{Binding CurrentBorrowing.DueDate}" 
                                             Style="{StaticResource CustomDatePickerStyle}"/>
                                 
-                                <Button Content="Borrow Book" 
+                                <Button Content="Pinjam Buku" 
                                         Command="{Binding BorrowCommand}"
                                         Background="#2ecc71"
                                         Style="{StaticResource ActionButtonStyle}"/>
                                 
                                 <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
                                 
-                                <TextBlock Text="Selected Borrowing" 
+                                <TextBlock Text="Peminjaman Terpilih" 
                                          FontWeight="Bold" 
                                          FontSize="16"
                                          Foreground="#333333"
                                          Margin="0,0,0,15"/>
                                 
-                                <Button Content="Return Selected Book" 
+                                <Button Content="Kembalikan Buku Pilihan" 
                                         Command="{Binding ReturnCommand}"
                                         Background="#3498db"
                                         Style="{StaticResource ActionButtonStyle}"/>
                                 
-                                <Button Content="Cancel" 
+                                <Button Content="Membatalkan" 
                                         Command="{Binding CancelCommand}"
                                         Background="#95a5a6"
                                         Style="{StaticResource ActionButtonStyle}"/>

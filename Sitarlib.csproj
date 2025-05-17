@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Assets\SMAN-TKN-PABAR.ico</ApplicationIcon>
+
     </PropertyGroup>
 
     <ItemGroup>
@@ -33,6 +35,9 @@
     <ItemGroup>
       <None Remove="Assets\logo.png" />
       <Resource Include="Assets\logo.png" />
+      <None Remove="Assets\SMAN-TKN-PABAR.png" />
+      <None Remove="Assets\SMAN-TKN-PABAR.ico" />
+      <Resource Include="Assets\SMAN-TKN-PABAR.ico" />
     </ItemGroup>
 
 </Project>

@@ -7,26 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1200">
     
-    <UserControl.Resources>
+   <UserControl.Resources>
         <!-- Style untuk sidebar menu item -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0,2" />
-            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Margin" Value="10,4" />
+            <Setter Property="Padding" Value="15,12" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="#CFD8DC" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontWeight" Value="Medium" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 
@@ -40,6 +42,11 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#2196F3" />
                                 <Setter Property="Cursor" Value="Hand" />
+                                <Setter TargetName="ButtonBorder" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.3" Color="#000000" />
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -49,9 +56,47 @@
 
         <!-- Style untuk logout button -->
         <Style x:Key="LogoutButtonStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
-            <Setter Property="Foreground" Value="#fff" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Background" Value="#E53935" />
+            <Setter Property="Margin" Value="15,10" />
         </Style>
 
+        <!-- Style untuk item menu yang aktif -->
+        <Style x:Key="ActiveMenuItemStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
+            <Setter Property="Background" Value="#2196F3" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ContentPresenter Grid.Column="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E88E5" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Lainnya tetap sama seperti sebelumnya -->
         <!-- Style untuk statistik card -->
         <Style x:Key="StatCardStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />
@@ -145,23 +190,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <!-- Style untuk item menu yang aktif -->
-        <Style x:Key="ActiveMenuItemStyle" TargetType="Border">
-            <Setter Property="Background" Value="#3498db" />
-            <Setter Property="Width" Value="4" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-        </Style>
     </UserControl.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="240" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <!-- Sidebar Navigation -->
-        <Border Grid.Column="0" Background="#1565C0">
+        <!-- Sidebar Navigation - Background dengan gradient untuk tampilan yang lebih modern -->
+        <Border Grid.Column="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#1565C0" Offset="0"/>
+                    <GradientStop Color="#0D47A1" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -169,10 +214,11 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- App Logo and Title -->
-                <Border Grid.Row="0" Padding="20,25" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
+                <!-- App Logo and Title - Dengan efek bayangan dan logo -->
+                <Border Grid.Row="0" Padding="15,20" BorderThickness="0,0,0,1" BorderBrush="#1C2B39">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White">
+                        <Image Source="/Assets/SMAN-TKN-PABAR.ico" Width="70" Height="70" Margin="0,0,10,0"/>
+                        <TextBlock Text="SitarLib" FontSize="24" FontWeight="Bold" Foreground="White" VerticalAlignment="Center">
                             <TextBlock.Effect>
                                 <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.5" />
                             </TextBlock.Effect>
@@ -180,99 +226,90 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Menu Items -->
-                <StackPanel Grid.Row="1" Margin="0,20,0,0">
-                    <!-- Dashboard -->
-                    <Grid Margin="0,5">
-                        <Border Background="#2196F3" CornerRadius="5" />
-                        <Button Style="{StaticResource SidebarButtonStyle}" Foreground="White">
+                <!-- Menu Items - Dengan efek hover yang lebih menarik dan sudut yang dibulatkan -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,15,0,0">
+                    <StackPanel>
+                        <!-- Dashboard - Menu yang aktif -->
+                        <Button Style="{StaticResource ActiveMenuItemStyle}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📊" />
-                                <TextBlock Grid.Column="1" Text="Dashboard" />
+                                <TextBlock Grid.Column="0" Text="🏠" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Dashboard" FontWeight="SemiBold" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Books -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToBookCommand}">
+                        <!-- Books -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToBookCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📚" />
-                                <TextBlock Grid.Column="1" Text="Books" />
+                                <TextBlock Grid.Column="0" Text="📚" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Buku" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Members -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToMemberCommand}">
+                        <!-- Members -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToMemberCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="👥" />
-                                <TextBlock Grid.Column="1" Text="Members" />
+                                <TextBlock Grid.Column="0" Text="👥" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Anggota" />
                             </Grid>
                         </Button>
-                    </Grid>
 
-                    <!-- Borrowings -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToBorrowingCommand}">
+                        <!-- Borrowings -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToBorrowingCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📋" />
-                                <TextBlock Grid.Column="1" Text="Borrowings" />
+                                <TextBlock Grid.Column="0" Text="📋" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Data Peminjaman" />
                             </Grid>
                         </Button>
-                    </Grid>
-                    <!-- Report -->
-                    <Grid Margin="0,5">
-                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}">
+
+                        <!-- Report -->
+                        <Button Style="{StaticResource SidebarButtonStyle}" Command="{Binding NavigateToReportCommand}" Margin="15,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📈" />
-                                <TextBlock Grid.Column="1" Text="Reports" />
+                                <TextBlock Grid.Column="0" Text="📈" FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="Laporan" />
                             </Grid>
                         </Button>
-                    </Grid>
+                    </StackPanel>
+                </ScrollViewer>
 
-                </StackPanel>
-
-                <!-- Logout Button at bottom -->
-                <Button Grid.Row="2"
-                        Command="{Binding LogoutCommand}"
-                        Background="#E53935"
-                        Style="{StaticResource LogoutButtonStyle}"
-                        Margin="0,0,0,20">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="⏻" />
-                        <TextBlock Grid.Column="1" Text="Logout" />
-                    </Grid>
-                </Button>
+                <!-- Logout Button with improved style -->
+                <Border Grid.Row="2" Margin="15,15" BorderThickness="0" CornerRadius="8" Background="#E53935">
+                    <Button Command="{Binding LogoutCommand}"
+                            Style="{StaticResource LogoutButtonStyle}"
+                            Background="Transparent"
+                            Margin="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="⏻" FontSize="16" />
+                            <TextBlock Grid.Column="1" Text="Logout" FontWeight="SemiBold" />
+                        </Grid>
+                    </Button>
+                </Border>
             </Grid>
         </Border>
-
-        
+    
         <!-- Main Content Area -->
         <Grid Grid.Column="1">
             <Grid.Background>
@@ -298,7 +335,7 @@
                     
                     <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
                         <TextBlock Text="Dashboard" FontSize="24" FontWeight="SemiBold" Foreground="#333333"/>
-                        <TextBlock Text="Welcome to SitarLib library management system" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
+                        <TextBlock Text="Selamat datang di sistem manajemen perpustakaan SitarLib" FontSize="13" Foreground="#777777" Margin="0,5,0,0"/>
                     </StackPanel>
                     
                     <!-- Loading indicator could be added here if needed -->
@@ -331,7 +368,7 @@
                         </Rectangle>
                         
                         <StackPanel Grid.Row="1">
-                            <TextBlock Text="Total Books" Style="{StaticResource StatTitleStyle}"/>
+                            <TextBlock Text="Jumlah Buku" Style="{StaticResource StatTitleStyle}"/>
                             <TextBlock Text="{Binding TotalBooks}" Style="{StaticResource StatValueStyle}" Foreground="#3498db"/>
                         </StackPanel>
                     </Grid>
@@ -354,7 +391,7 @@
                         </Rectangle>
                         
                         <StackPanel Grid.Row="1">
-                            <TextBlock Text="Total Members" Style="{StaticResource StatTitleStyle}"/>
+                            <TextBlock Text="Jumlah Anggota" Style="{StaticResource StatTitleStyle}"/>
                             <TextBlock Text="{Binding TotalMembers}" Style="{StaticResource StatValueStyle}" Foreground="#9b59b6"/>
                         </StackPanel>
                     </Grid>
@@ -377,7 +414,7 @@
                         </Rectangle>
                         
                         <StackPanel Grid.Row="1">
-                            <TextBlock Text="Active Borrowings" Style="{StaticResource StatTitleStyle}"/>
+                            <TextBlock Text="Pinjaman Aktif" Style="{StaticResource StatTitleStyle}"/>
                             <TextBlock Text="{Binding ActiveBorrowings}" Style="{StaticResource StatValueStyle}" Foreground="#2ecc71"/>
                         </StackPanel>
                     </Grid>
@@ -400,7 +437,7 @@
                         </Rectangle>
                         
                         <StackPanel Grid.Row="1">
-                            <TextBlock Text="Overdue Borrowings" Style="{StaticResource StatTitleStyle}"/>
+                            <TextBlock Text="Melewati Tenggat" Style="{StaticResource StatTitleStyle}"/>
                             <TextBlock Text="{Binding OverdueBorrowings}" Style="{StaticResource StatValueStyle}" Foreground="#e74c3c"/>
                         </StackPanel>
                     </Grid>
@@ -432,8 +469,8 @@
                         </Grid.ColumnDefinitions>
                         
                         <StackPanel Grid.Column="0" Orientation="Vertical">
-                            <TextBlock Text="Recent Borrowings" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
-                            <TextBlock Text="List of recent borrowing transactions" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
+                            <TextBlock Text="Pinjaman Terbaru" FontWeight="Bold" FontSize="18" Foreground="#333333"/>
+                            <TextBlock Text="Daftar transaksi pinjaman terkini" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
                         </StackPanel>
                         
                         <Button Grid.Column="1" 
