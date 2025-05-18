@@ -8,6 +8,118 @@
              d:DesignHeight="650" d:DesignWidth="1000">
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+       <!-- Improved Button Import Styles -->
+        <Style x:Key="ModernImportButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E88E5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1565C0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#BDBDBD"/>
+                                <Setter Property="Foreground" Value="#757575"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernMenuItemButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="8,12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#EEEEEE"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernToolTipStyle" TargetType="ToolTip">
+            <Setter Property="Background" Value="#424242"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Enhanced Shadow Effect -->
+        <DropShadowEffect x:Key="EnhancedDropShadowEffect"
+                          ShadowDepth="2"
+                          Direction="270"
+                          Color="Black"
+                          Opacity="0.2"
+                          BlurRadius="8"/>
+        <!-- Sel umum -->
+        <Style x:Key="CellText" TargetType="TextBlock">
+            <Setter Property="Margin"            Value="10,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Sel dengan ellipsis -->
+        <Style x:Key="CellTextTrim" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
         <!-- Style untuk sidebar menu item -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="10,4" />
@@ -370,10 +482,165 @@
                                 <TextBlock Text="Daftar semua buku perpustakaan" Foreground="#777777" FontSize="12" Margin="0,5,0,0"/>
                             </StackPanel>
                             
-                            <Button Grid.Column="1" 
-                                    Content="↻ Refresh" 
-                                    Command="{Binding RefreshDataCommand}" 
-                                    Style="{StaticResource SearchButtonStyle}"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button x:Name="ImportButton"
+                                        Style="{StaticResource ModernImportButtonStyle}"
+                                        Command="{Binding ShowImportOptionsCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" 
+                                              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Width="16" Height="16"
+                                              Stretch="Uniform"
+                                              Margin="0,0,8,0"/>
+                                        <TextBlock Text="Import" 
+                                                   VerticalAlignment="Center" 
+                                                   FontWeight="SemiBold"
+                                                   FontFamily="Segoe UI"/>
+                                        <Path Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+                                              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Width="12" Height="12"
+                                              Stretch="Uniform"
+                                              Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button.ToolTip>
+                                        <ToolTip Content="Import books from file" Style="{StaticResource ModernToolTipStyle}"/>
+                                    </Button.ToolTip>
+                                </Button>
+
+                                <Popup Name="ImportOptionsPopup"
+                                        IsOpen="{Binding IsImportOptionsOpen, Mode=TwoWay}"
+                                        PlacementTarget="{Binding ElementName=ImportButton}"
+                                        Placement="Bottom"
+                                        AllowsTransparency="True"
+                                        StaysOpen="False">
+                                    <Border Background="White"
+                                            BorderBrush="#E0E0E0"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Effect="{StaticResource EnhancedDropShadowEffect}">
+                                        <StackPanel Margin="4">
+                                            <Button Style="{StaticResource ModernMenuItemButtonStyle}"
+                                                    Command="{Binding ImportCsvCommand}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,19L12,15H9V10H15V15L13,19H10Z"
+                                                          Fill="#2196F3"
+                                                          Width="18" Height="18"
+                                                          Stretch="Uniform"
+                                                          Margin="8,0,12,0"/>
+                                                    <TextBlock Text="Import CSV" 
+                                                               VerticalAlignment="Center"
+                                                               FontFamily="Segoe UI"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Separator Margin="0,4" Background="#F0F0F0" Height="1"/>
+                                            <Button Style="{StaticResource ModernMenuItemButtonStyle}"
+                                                    Command="{Binding ImportXlsxCommand}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12.35,13.33L15.25,9.42L16.67,10.84L12.35,16.17L9.83,13.65L11.25,12.23L12.35,13.33Z"
+                                                          Fill="#4CAF50"
+                                                          Width="18" Height="18"
+                                                          Stretch="Uniform"
+                                                          Margin="8,0,12,0"/>
+                                                    <TextBlock Text="Import Excel (XLSX)" 
+                                                               VerticalAlignment="Center"
+                                                               FontFamily="Segoe UI"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+                        <!-- Loading Overlay untuk Import Buku -->
+                        <Grid Background="#90000000" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Border Background="#FFFFFF" 
+                                    CornerRadius="10" 
+                                    Width="300" 
+                                    Height="160"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="3" Direction="270" Color="Black" Opacity="0.2" BlurRadius="10"/>
+                                </Border.Effect>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!-- Circular ProgressBar -->
+                                    <ProgressBar IsIndeterminate="True" 
+                                                 Width="40" 
+                                                 Height="40"
+                                                 Foreground="#2196F3" 
+                                                 Margin="0,0,0,15">
+                                        <ProgressBar.Style>
+                                            <Style TargetType="{x:Type ProgressBar}">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ProgressBar}">
+                                                            <Border BorderBrush="Transparent" 
+                                                                    BorderThickness="0" 
+                                                                    Background="Transparent" 
+                                                                    CornerRadius="20">
+                                                                <Grid>
+                                                                    <Ellipse x:Name="PART_Track" 
+                                                                             StrokeThickness="4" 
+                                                                             Stroke="#E0E0E0" 
+                                                                             Fill="Transparent"/>
+                                                                    <Ellipse x:Name="PART_Indicator" 
+                                                                             StrokeThickness="4" 
+                                                                             Stroke="#2196F3" 
+                                                                             Fill="Transparent"
+                                                                             StrokeDashArray="0,100"
+                                                                             RenderTransformOrigin="0.5,0.5">
+                                                                        <Ellipse.RenderTransform>
+                                                                            <RotateTransform x:Name="RotateTransform" Angle="0"/>
+                                                                        </Ellipse.RenderTransform>
+                                                                    </Ellipse>
+                                                                </Grid>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsIndeterminate" Value="true">
+                                                                    <Setter Property="StrokeDashArray" TargetName="PART_Indicator" Value="20,80"/>
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetName="RotateTransform" 
+                                                                                              Storyboard.TargetProperty="Angle"
+                                                                                              From="0" To="360" Duration="0:0:1.5"
+                                                                                              RepeatBehavior="Forever" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ProgressBar.Style>
+                                    </ProgressBar>
+                                    
+                                    <TextBlock Text="Importing Books" 
+                                               Foreground="#333333" 
+                                               HorizontalAlignment="Center" 
+                                               FontSize="16" 
+                                               FontWeight="SemiBold"/>
+                                               
+                                    <TextBlock Text="{Binding BusyMessage}" 
+                                               Foreground="#777777" 
+                                               HorizontalAlignment="Center" 
+                                               TextWrapping="Wrap"
+                                               MaxWidth="260"
+                                               TextAlignment="Center"
+                                               FontSize="12"
+                                               Margin="0,8,0,0"/>
+                                               
+                                    <TextBlock Text="Please don't close this window" 
+                                               Foreground="#999999" 
+                                               HorizontalAlignment="Center" 
+                                               FontSize="11" 
+                                               FontStyle="Italic"
+                                               Margin="0,12,0,0"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
                         
                         <!-- Search controls -->
@@ -392,68 +659,52 @@
                                     Style="{StaticResource SearchButtonStyle}"/>
                         </Grid>
                         
-                        <DataGrid Grid.Row="2" 
-                                  ItemsSource="{Binding Books}" 
+                        <DataGrid Grid.Row="2"
+                                  ItemsSource="{Binding Books}"
                                   SelectedItem="{Binding SelectedBook}"
-                                  Style="{StaticResource CustomDataGridStyle}">
+                                  Style="{StaticResource CustomDataGridStyle}"
+                                  ColumnWidth="*"                   
+                                  HeadersVisibility="Column"
+                                  HorizontalScrollBarVisibility="Disabled">
+
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto">
+
+                                <!-- ISBN – lebar tetap agar konsisten (13 digit) -->
+                                <DataGridTextColumn Header="ISBN"
+                                                    Binding="{Binding ISBN}"
+                                                    Width="130"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Judul – bobot terbesar -->
+                                <DataGridTextColumn Header="Judul"
+                                                    Binding="{Binding Title}"
+                                                    Width="3*"
+                                                    ElementStyle="{StaticResource CellTextTrim}" />
+
+                                <!-- Pengarang – bobot sedang -->
+                                <DataGridTextColumn Header="Pengarang"
+                                                    Binding="{Binding Author}"
+                                                    Width="2*"
+                                                    ElementStyle="{StaticResource CellTextTrim}" />
+
+                                <!-- Kategori – bobot kecil -->
+                                <DataGridTextColumn Header="Kategori"
+                                                    Binding="{Binding Category}"
+                                                    Width="1.2*"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Jumlah – lebar tetap, rata-tengah & tebal -->
+                                <DataGridTextColumn Header="Jumlah"
+                                                    Binding="{Binding Stock}"
+                                                    Width="80">
                                     <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FontWeight"         Value="SemiBold"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Stock" Binding="{Binding Stock}" Width="50">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="FontWeight" Value="SemiBold" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
+
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -502,23 +753,23 @@
                                 <TextBox Text="{Binding CurrentBook.ISBN, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Title" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Judul" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Title, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Author" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Pengarang" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Author, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Publisher" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Penerbit" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Publisher, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Publication Year" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Tahun Terbit" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.PublicationYear, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Category" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Kategori" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Category, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
@@ -526,37 +777,37 @@
                                 <TextBox Text="{Binding CurrentBook.Stock, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
-                                <TextBlock Text="Description" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Keterangan" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Description, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"
                                         TextWrapping="Wrap"
                                         AcceptsReturn="True"
                                         Height="80"/>
 
-                                <Button Content="Save Book" 
+                                <Button Content="Simpan Buku" 
                                         Command="{Binding SaveCommand}"
                                         Background="#2ecc71"
                                         Style="{StaticResource ActionButtonStyle}"/>
                                 
                                 <Rectangle Height="1" Fill="#DDDDDD" Margin="0,20,0,20"/>
                                 
-                                <TextBlock Text="Book Actions" 
+                                <TextBlock Text="Tindakan" 
                                          FontWeight="Bold" 
                                          FontSize="16"
                                          Foreground="#333333"
                                          Margin="0,0,0,15"/>
                                 
-                                <Button Content="Add New Book" 
+                                <Button Content="Tambahkan Buku Baru" 
                                         Command="{Binding AddNewCommand}"
                                         Background="#3498db"
                                         Style="{StaticResource ActionButtonStyle}"/>
                                 
-                                <Button Content="Delete Selected Book" 
+                                <Button Content="Hapus Buku yang Dipilih" 
                                         Command="{Binding DeleteCommand}"
                                         Background="#e74c3c"
                                         Style="{StaticResource ActionButtonStyle}"/>
                                 
-                                <Button Content="Cancel" 
+                                <Button Content="Membatalkan" 
                                         Command="{Binding CancelCommand}"
                                         Background="#95a5a6"
                                         Style="{StaticResource ActionButtonStyle}"/>

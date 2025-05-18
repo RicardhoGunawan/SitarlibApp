@@ -8,6 +8,16 @@
              d:DesignHeight="800" d:DesignWidth="1200">
 
     <UserControl.Resources>
+        <!-- Sel teks normal -->
+        <Style x:Key="CellText" TargetType="TextBlock">
+            <Setter Property="Margin"             Value="10,0"/>
+            <Setter Property="VerticalAlignment"  Value="Center"/>
+        </Style>
+
+        <!-- Sel teks yang boleh terpotong -->
+        <Style x:Key="CellTextTrim" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
         <!-- Style untuk sidebar menu item -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="10,4" />
@@ -392,90 +402,75 @@
                                     Style="{StaticResource SearchButtonStyle}"/>
                         </Grid>
                         
-                        <DataGrid Grid.Row="2" 
-                                  ItemsSource="{Binding Members}" 
+                        <DataGrid Grid.Row="2"
+                                  ItemsSource="{Binding Members}"
                                   SelectedItem="{Binding SelectedMember}"
-                                  Style="{StaticResource CustomDataGridStyle}">
+                                  Style="{StaticResource CustomDataGridStyle}"
+                                  ColumnWidth="*"                    
+                                  HeadersVisibility="Column"
+                                  HorizontalScrollBarVisibility="Disabled">
+
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Member Code" Binding="{Binding MemberCode}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Expiry Date" Binding="{Binding MembershipExpiry, StringFormat=d}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTemplateColumn Header="Status" Width="Auto">
+
+                                <!-- No Member – panjang tetap -->
+                                <DataGridTextColumn Header="No Member"
+                                                    Binding="{Binding MemberCode}"
+                                                    Width="110"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Nama Lengkap – proporsi terbesar -->
+                                <DataGridTextColumn Header="Nama Lengkap"
+                                                    Binding="{Binding FullName}"
+                                                    Width="3*"
+                                                    ElementStyle="{StaticResource CellTextTrim}" />
+
+                                <!-- Kelas – proporsi sedang -->
+                                <DataGridTextColumn Header="Kelas"
+                                                    Binding="{Binding Class}"
+                                                    Width="1.8*"
+                                                    ElementStyle="{StaticResource CellTextTrim}" />
+
+                                <!-- Phone – lebar tetap -->
+                                <DataGridTextColumn Header="Phone"
+                                                    Binding="{Binding PhoneNumber}"
+                                                    Width="120"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Expiry Date – lebar tetap -->
+                                <DataGridTextColumn Header="Expiry Date"
+                                                    Binding="{Binding MembershipExpiry, StringFormat=d}"
+                                                    Width="120"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Status – template -->
+                                <DataGridTemplateColumn Header="Status" Width="65">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border CornerRadius="3" Padding="8,3" Margin="5,0" HorizontalAlignment="Center">
+                                            <Border CornerRadius="3"
+                                                    Padding="8,3"
+                                                    Margin="5,0"
+                                                    HorizontalAlignment="Center">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#e8f5e9" />
+                                                        <Setter Property="Background" Value="#e8f5e9"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                                <Setter Property="Background" Value="#ffebee" />
+                                                                <Setter Property="Background" Value="#ffebee"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                                <TextBlock VerticalAlignment="Center"
+                                                           HorizontalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Text" Value="Active" />
-                                                            <Setter Property="Foreground" Value="#388e3c" />
+                                                            <Setter Property="Text"       Value="Active"/>
+                                                            <Setter Property="Foreground" Value="#388e3c"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                                    <Setter Property="Text" Value="Inactive" />
-                                                                    <Setter Property="Foreground" Value="#d32f2f" />
+                                                                    <Setter Property="Text"       Value="Inactive"/>
+                                                                    <Setter Property="Foreground" Value="#d32f2f"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -485,6 +480,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -536,6 +532,10 @@
 
                                 <TextBlock Text="Nama Lengkap" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentMember.FullName, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource FormInputStyle}"/>
+
+                                <TextBlock Text="Kelas" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBox Text="{Binding CurrentMember.Class, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
 
                                 <TextBlock Text="Alamat" Style="{StaticResource FieldLabelStyle}"/>

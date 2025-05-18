@@ -156,8 +156,11 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBookCommand { get; }
         public ICommand NavigateToMemberCommand { get; }
         public ICommand NavigateToBorrowingCommand { get; }
-        public ICommand NavigateToReportCommand { get; } // Ditambahkan
-
+        public ICommand NavigateToReportCommand { get; }
+        
+        // Add quantity commands as public properties
+        public ICommand IncrementQuantityCommand { get; private set; }
+        public ICommand DecrementQuantityCommand { get; private set; }
         
         public ICommand RefreshDataCommand { get; }
         public ICommand SearchBooksCommand { get; }
@@ -192,6 +195,10 @@ namespace SitarLib.ViewModels
             BorrowCommand = new RelayCommand(_ => ExecuteBorrow(), _ => CanBorrow());
             ReturnCommand = new RelayCommand(_ => ExecuteReturn(), _ => CanReturn());
             CancelCommand = new RelayCommand(_ => ExecuteCancel());
+            
+            // Initialize quantity commands
+            IncrementQuantityCommand = new RelayCommand(_ => ExecuteIncrementQuantity());
+            DecrementQuantityCommand = new RelayCommand(_ => ExecuteDecrementQuantity());
 
             // Navigation command to dashboard
             NavigateToDashboardCommand = new RelayCommand(_ => NavigationService.NavigateTo("Dashboard"));
@@ -210,6 +217,27 @@ namespace SitarLib.ViewModels
             ExecuteAddNew();
         }
 
+        // Basic quantity command implementations without complex validation
+        private void ExecuteIncrementQuantity()
+        {
+            if (CurrentBorrowing != null && SelectedBook != null)
+            {
+                if (CurrentBorrowing.Quantity < SelectedBook.Stock)
+                {
+                    CurrentBorrowing.Quantity++;
+                    OnPropertyChanged(nameof(CurrentBorrowing));
+                }
+            }
+        }
+
+        private void ExecuteDecrementQuantity()
+        {
+            if (CurrentBorrowing != null && CurrentBorrowing.Quantity > 1)
+            {
+                CurrentBorrowing.Quantity--;
+                OnPropertyChanged(nameof(CurrentBorrowing));
+            }
+        }
 
         private void LoadBorrowings()
         {
@@ -306,7 +334,8 @@ namespace SitarLib.ViewModels
             CurrentBorrowing = new Borrowing
             {
                 BorrowDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(7) // Default loan period: 1 week
+                DueDate = DateTime.Now.AddDays(3), // Default loan period: 1 week
+                Quantity = 1 // Initialize with quantity 1
             };
             SelectedBook = null;
             SelectedMember = null;
@@ -330,8 +359,16 @@ namespace SitarLib.ViewModels
 
         private void ExecuteBorrow()
         {
+            // Basic validation
+            if (CurrentBorrowing.Quantity <= 0 || 
+                (SelectedBook != null && SelectedBook.Stock < CurrentBorrowing.Quantity))
+            {
+                DialogService.ShowMessage("Quantity tidak valid atau stok tidak cukup.");
+                return;
+            }
+
             DataService.AddBorrowing(CurrentBorrowing);
-            DialogService.ShowMessage("Book borrowed successfully!");
+            DialogService.ShowMessage($"{CurrentBorrowing.Quantity} buku berhasil dipinjam!");
             
             LoadBorrowings();
             LoadAvailableBooks(); // Refresh available books as stock changed
@@ -350,7 +387,7 @@ namespace SitarLib.ViewModels
             {
                 // Add confirmation dialog first
                 var confirmResult = MessageBox.Show(
-                    "Apakah Anda yakin ingin mengembalikan buku ini?",
+                    $"Apakah Anda yakin ingin mengembalikan {SelectedBorrowing.Quantity} buku ini?",
                     "Konfirmasi Pengembalian",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
@@ -359,13 +396,8 @@ namespace SitarLib.ViewModels
                 {
                     DataService.ReturnBook(SelectedBorrowing.Id);
 
-                    string message = "Book returned successfully!";
-                    // If you want to display fines later, reactivate this section
-                    // if (SelectedBorrowing.Fine > 0)
-                    // {
-                    //     message += $" A fine of ${SelectedBorrowing.Fine} has been charged for overdue.";
-                    // }
-
+                    string message = $"{SelectedBorrowing.Quantity} buku berhasil dikembalikan!";
+                    
                     DialogService.ShowMessage(message);
                     LoadBorrowings();
                     LoadAvailableBooks(); // Refresh book stock
@@ -374,7 +406,7 @@ namespace SitarLib.ViewModels
             else
             {
                 // If nothing is selected, notify the user
-                DialogService.ShowMessage("Please select a borrowing record to return.");
+                DialogService.ShowMessage("Silakan pilih data peminjaman untuk mengembalikan.");
             }
         }
 

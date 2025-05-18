@@ -8,13 +8,13 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64
 Sitarlib
 none
 false
-TRACE;RELEASE;NET;NET9_0;NETCOREAPP
+TRACE;RELEASE;NET;NET9_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\App.xaml
-61259953202
+7-241461384
 
-25-1987432870
-2511533666763
-Views\BookView.xaml;Views\BorrowingView.xaml;Views\DashboardView.xaml;Views\LoginView.xaml;Views\MainWindow.xaml;Views\MemberView.xaml;
+2786569794
+251-1269417348
+Views\BookView.xaml;Views\BorrowingView.xaml;Views\DashboardView.xaml;Views\LoginView.xaml;Views\MainWindow.xaml;Views\MemberView.xaml;Views\ReportView.xaml;
 
 False
 

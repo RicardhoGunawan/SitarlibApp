@@ -29,6 +29,7 @@ namespace SitarLib.ViewModels
                         Id = value.Id,
                         MemberCode = value.MemberCode,
                         FullName = value.FullName,
+                        Class = value.Class,
                         Address = value.Address,
                         PhoneNumber = value.PhoneNumber,
                         Email = value.Email,

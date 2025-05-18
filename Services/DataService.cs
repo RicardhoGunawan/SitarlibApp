@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using SitarLib.Models;
+using System.Data;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Member = SitarLib.Models.Member;
 
 namespace SitarLib.Services
 {
@@ -71,6 +77,7 @@ namespace SitarLib.Services
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     MemberCode TEXT NOT NULL,
                     FullName TEXT NOT NULL,
+                    Class TEXT,
                     Address TEXT,
                     PhoneNumber TEXT,
                     Email TEXT,
@@ -110,6 +117,7 @@ namespace SitarLib.Services
                     ReturnDate TEXT NULL,
                     Status TEXT,
                     Fine REAL,
+                    Quantity INTEGER DEFAULT 1,
                     FOREIGN KEY (BookId) REFERENCES Books(Id),
                     FOREIGN KEY (MemberId) REFERENCES Members(Id)
                 );";
@@ -350,6 +358,242 @@ namespace SitarLib.Services
             
             return ExecuteNonQuery(sql, parameters) > 0;
         }
+        private int _duplicateCount = 0;
+
+        /*private int GetDuplicateCount()
+        {
+            int count = _duplicateCount;
+            _duplicateCount = 0; // Reset for next import
+            return count;
+        }*/
+        // Add this method to check if a book already exists
+        public bool BookExists(string isbn)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+            
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT COUNT(*) FROM Books WHERE ISBN = @ISBN";
+                        command.Parameters.AddWithValue("@ISBN", isbn);
+                
+                        int count = Convert.ToInt32(command.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[BookExists] Error: {ex}");
+                return false;
+            }
+        }
+        public async Task<(int imported, int duplicates)> ImportBooksFromFileAsync(string filePath, string fileType)
+        {
+            return await Task.Run(() => 
+            {
+                int imported = -1;
+                int duplicates = 0;
+
+                if (fileType.ToLower() == "csv")
+                {
+                    // Ubah untuk menerima tuple yang berisi imported dan duplicates
+                    var result = ImportBooksFromCsv(filePath);
+                    imported = result.imported;
+                    duplicates = result.duplicates;
+                }
+                else if (fileType.ToLower() == "xlsx")
+                {
+                    // Ubah untuk menerima tuple yang berisi imported dan duplicates
+                    var result = ImportBooksFromXlsx(filePath);
+                    imported = result.imported;
+                    duplicates = result.duplicates;
+                }
+
+                return (imported, duplicates);
+            });
+        }
+        // Modified ImportBooksFromCsv method to check for duplicates
+        // Ubah return type menjadi tuple untuk mengembalikan jumlah yang diimpor dan duplikat
+        public (int imported, int duplicates) ImportBooksFromCsv(string filePath)
+        {
+            int importedCount = 0;
+            int duplicateCount = 0;
+            
+            try
+            {
+                // Check if file exists
+                if (!File.Exists(filePath))
+                {
+                    return (-1, 0);
+                }
+                
+                // Read all lines from the CSV file
+                string[] lines = File.ReadAllLines(filePath);
+                
+                // Skip header row
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+                    
+                    string[] parts = line.Split(',');
+                    
+                    // Validate the CSV format (should have at least basic required fields)
+                    if (parts.Length < 3)
+                        continue;
+                    
+                    string isbn = parts[0].Trim('"');
+                    
+                    // Check if book already exists
+                    if (BookExists(isbn))
+                    {
+                        duplicateCount++;
+                        continue; // Skip this book
+                    }
+                    
+                    // Create a new book object
+                    Book book = new Book
+                    {
+                        ISBN = isbn,
+                        Title = parts[1].Trim('"'),
+                        Author = parts[2].Trim('"'),
+                        Publisher = parts.Length > 3 ? parts[3].Trim('"') : null,
+                        PublicationYear = parts.Length > 4 && int.TryParse(parts[4].Trim('"'), out int year) ? year : DateTime.Now.Year,
+                        Category = parts.Length > 5 ? parts[5].Trim('"') : null,
+                        Stock = parts.Length > 6 && int.TryParse(parts[6].Trim('"'), out int stock) ? stock : 1,
+                        Description = parts.Length > 7 ? parts[7].Trim('"') : null,
+                        AddedDate = DateTime.Now
+                    };
+                    
+                    // Add the book to the database
+                    AddBook(book);
+                    importedCount++;
+                }
+                
+                // Return both the imported count and duplicate count
+                return (importedCount, duplicateCount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ImportBooksFromCsv] Error: {ex}");
+                return (-1, 0);
+            }
+        }
+        // Modified ImportBooksFromXlsx method to check for duplicates
+        // Ubah return type menjadi tuple untuk mengembalikan jumlah yang diimpor dan duplikat
+        public (int imported, int duplicates) ImportBooksFromXlsx(string filePath)
+        {
+            int importedCount = 0;
+            int duplicateCount = 0;
+
+            try
+            {
+                if (!File.Exists(filePath))
+                    return (-1, 0);
+
+                using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, false))
+                {
+                    WorkbookPart workbookPart = document.WorkbookPart;
+                    var worksheetPart = workbookPart.WorksheetParts.First();
+                    var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                    var rows = sheetData.Elements<Row>().ToList();
+
+                    if (rows.Count <= 1)
+                        return (-1, 0); // tidak ada data selain header
+
+                    // Proses setiap baris, skip header
+                    foreach (var row in rows.Skip(1))
+                    {
+                        var values = GetRowValues(row, workbookPart);
+
+                        // Minimal harus ada ISBN (col 0), Title (col 1), Author (col 2)
+                        if (!values.ContainsKey(0) || !values.ContainsKey(1) || !values.ContainsKey(2))
+                            continue;
+
+                        string isbn = values[0];
+                        
+                        // Check if book already exists
+                        if (BookExists(isbn))
+                        {
+                            duplicateCount++;
+                            continue; // Skip this book
+                        }
+
+                        var book = new Book
+                        {
+                            ISBN = isbn,
+                            Title = values[1],
+                            Author = values[2],
+                            Publisher = values.ContainsKey(3) ? values[3] : null,
+                            PublicationYear = values.ContainsKey(4) && int.TryParse(values[4], out var y) ? y : DateTime.Now.Year,
+                            Category = values.ContainsKey(5) ? values[5] : null,
+                            Stock = values.ContainsKey(6) && int.TryParse(values[6], out var s) ? s : 1,
+                            Description = values.ContainsKey(7) ? values[7] : null,
+                            AddedDate = DateTime.Now
+                        };
+
+                        AddBook(book);
+                        importedCount++;
+                    }
+                }
+
+                // Return both the imported count and duplicate count
+                return (importedCount, duplicateCount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ImportBooksFromXlsx] Error: {ex}");
+                return (-1, 0);
+            }
+        }
+        // Helper method to extract cell values from Excel
+        private Dictionary<int, string> GetRowValues(Row row, WorkbookPart wp)
+        {
+            var result = new Dictionary<int, string>();
+
+            foreach (var cell in row.Elements<Cell>())
+            {
+                // Extract huruf dari CellReference, misal "C5" → "C"
+                string colRef = new string(cell.CellReference.Value
+                    .Where(char.IsLetter)
+                    .ToArray());
+                int colIndex = ConvertColumnNameToNumber(colRef) - 1;
+                result[colIndex] = GetCellValue(cell, wp);
+            }
+
+            return result;
+        }
+        private int ConvertColumnNameToNumber(string columnName)
+        {
+            int sum = 0;
+            foreach (char c in columnName.ToUpper())
+            {
+                sum *= 26;
+                sum += (c - 'A' + 1);
+            }
+            return sum;
+        }
+        private string GetCellValue(Cell cell, WorkbookPart wp)
+        {
+            if (cell == null)
+                return string.Empty;
+
+            string value = cell.InnerText ?? string.Empty;
+
+            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            {
+                var sst = wp.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                if (sst != null && int.TryParse(value, out int idx))
+                    return sst.SharedStringTable.ElementAt(idx).InnerText;
+            }
+
+            return value;
+        }
         
         #endregion
         
@@ -364,6 +608,7 @@ namespace SitarLib.Services
                 Id = Convert.ToInt32(reader["Id"]),
                 MemberCode = reader["MemberCode"].ToString(),
                 FullName = reader["FullName"].ToString(),
+                Class = reader["Class"].ToString(),
                 Address = reader["Address"].ToString(),
                 PhoneNumber = reader["PhoneNumber"].ToString(),
                 Email = reader["Email"].ToString(),
@@ -383,6 +628,7 @@ namespace SitarLib.Services
                 Id = Convert.ToInt32(reader["Id"]),
                 MemberCode = reader["MemberCode"].ToString(),
                 FullName = reader["FullName"].ToString(),
+                Class = reader["Class"].ToString(),
                 Address = reader["Address"].ToString(),
                 PhoneNumber = reader["PhoneNumber"].ToString(),
                 Email = reader["Email"].ToString(),
@@ -397,14 +643,15 @@ namespace SitarLib.Services
         public int AddMember(Member member)
         {
             string sql = @"
-                INSERT INTO Members (MemberCode, FullName, Address, PhoneNumber, Email, RegistrationDate, MembershipExpiry, IsActive)
-                VALUES (@MemberCode, @FullName, @Address, @PhoneNumber, @Email, @RegistrationDate, @MembershipExpiry, @IsActive);
-                SELECT last_insert_rowid();";
-            
+            INSERT INTO Members (MemberCode, FullName, Class, Address, PhoneNumber, Email, RegistrationDate, MembershipExpiry, IsActive)
+            VALUES (@MemberCode, @FullName, @Class, @Address, @PhoneNumber, @Email, @RegistrationDate, @MembershipExpiry, @IsActive);
+            SELECT last_insert_rowid();";
+        
             var parameters = new Dictionary<string, object>
             {
                 { "MemberCode", member.MemberCode },
                 { "FullName", member.FullName },
+                { "Class", member.Class ?? (object)DBNull.Value },
                 { "Address", member.Address ?? (object)DBNull.Value },
                 { "PhoneNumber", member.PhoneNumber ?? (object)DBNull.Value },
                 { "Email", member.Email ?? (object)DBNull.Value },
@@ -412,7 +659,7 @@ namespace SitarLib.Services
                 { "MembershipExpiry", DateTime.Now.AddYears(1).ToString("yyyy-MM-dd HH:mm:ss") },
                 { "IsActive", member.IsActive ? 1 : 0 }
             };
-            
+        
             return ExecuteScalar<int>(sql, parameters);
         }
         
@@ -422,6 +669,7 @@ namespace SitarLib.Services
                 UPDATE Members
                 SET MemberCode = @MemberCode,
                     FullName = @FullName,
+                    Class = @Class,
                     Address = @Address,
                     PhoneNumber = @PhoneNumber,
                     Email = @Email,
@@ -434,6 +682,7 @@ namespace SitarLib.Services
                 { "Id", member.Id },
                 { "MemberCode", member.MemberCode },
                 { "FullName", member.FullName },
+                { "Class", member.Class ?? (object)DBNull.Value },
                 { "Address", member.Address ?? (object)DBNull.Value },
                 { "PhoneNumber", member.PhoneNumber ?? (object)DBNull.Value },
                 { "Email", member.Email ?? (object)DBNull.Value },
@@ -487,6 +736,8 @@ namespace SitarLib.Services
                     ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
                     Status = reader["Status"].ToString(),
                     //Fine = Convert.ToDecimal(reader["Fine"]),
+                    Quantity = reader["Quantity"] != DBNull.Value ? Convert.ToInt32(reader["Quantity"]) : 1, // Add this line
+
                     
                     // Create partial Book and Member objects with just the ID and name
                     Book = new Book { Id = Convert.ToInt32(reader["BookId"]), Title = reader["BookTitle"].ToString() },
@@ -499,34 +750,38 @@ namespace SitarLib.Services
         
         public List<Borrowing> GetOverdueBorrowings()
         {
-            string sql = @"
-            SELECT b.*, bk.Title as BookTitle, m.FullName as MemberName
+            const string sql = @"
+            SELECT b.*,
+                   bk.Title    AS BookTitle,
+                   m.FullName  AS MemberName
             FROM Borrowings b
-            INNER JOIN Books bk ON b.BookId = bk.Id
-            INNER JOIN Members m ON b.MemberId = m.Id
-            WHERE b.ReturnDate IS NULL 
-              AND DATE(b.DueDate, '+1 day') < DATE('now')
+            JOIN Books   bk ON bk.Id = b.BookId
+            JOIN Members m  ON m.Id  = b.MemberId
+            WHERE b.ReturnDate IS NULL
+              AND DATE(b.DueDate) < DATE(datetime('now', 'localtime'))
             ORDER BY b.DueDate;";
-    
+
             return ExecuteQuery(sql, reader =>
             {
-                var borrowing = new Borrowing
+                return new Borrowing
                 {
-                    Id = Convert.ToInt32(reader["Id"]),
-                    BookId = Convert.ToInt32(reader["BookId"]),
-                    MemberId = Convert.ToInt32(reader["MemberId"]),
+                    Id         = Convert.ToInt32(reader["Id"]),
+                    BookId     = Convert.ToInt32(reader["BookId"]),
+                    MemberId   = Convert.ToInt32(reader["MemberId"]),
                     BorrowDate = DateTime.Parse(reader["BorrowDate"].ToString()),
-                    DueDate = DateTime.Parse(reader["DueDate"].ToString()),
-                    ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
-                    Status = reader["Status"].ToString(),
-
-                    Book = new Book { Id = Convert.ToInt32(reader["BookId"]), Title = reader["BookTitle"].ToString() },
+                    DueDate    = DateTime.Parse(reader["DueDate"].ToString()),
+                    ReturnDate = null,
+                    Status     = "Overdue",
+                    Quantity   = reader["Quantity"] != DBNull.Value
+                        ? Convert.ToInt32(reader["Quantity"])
+                        : 1,
+                    Book   = new Book   { Id = Convert.ToInt32(reader["BookId"]),   Title    = reader["BookTitle"].ToString() },
                     Member = new Member { Id = Convert.ToInt32(reader["MemberId"]), FullName = reader["MemberName"].ToString() }
                 };
-        
-                return borrowing;
             });
         }
+
+
 
         
         public Borrowing GetBorrowingById(int id)
@@ -551,6 +806,7 @@ namespace SitarLib.Services
                     DueDate = DateTime.Parse(reader["DueDate"].ToString()),
                     ReturnDate = reader["ReturnDate"] != DBNull.Value ? (DateTime?)DateTime.Parse(reader["ReturnDate"].ToString()) : null,
                     Status = reader["Status"].ToString(),
+                    Quantity = reader["Quantity"] != DBNull.Value ? Convert.ToInt32(reader["Quantity"]) : 1, // Add this line
                     //Fine = Convert.ToDecimal(reader["Fine"]),
                     
                     // Create partial Book and Member objects with just the ID and name
@@ -575,24 +831,24 @@ namespace SitarLib.Services
                 {
                     try
                     {
-                        // First check if book is available
+                        // First check if book is available in sufficient quantity
                         string checkSql = "SELECT Stock FROM Books WHERE Id = @BookId;";
                         using (var command = new SQLiteCommand(checkSql, connection))
                         {
                             command.Parameters.AddWithValue("@BookId", borrowing.BookId);
                             var stock = Convert.ToInt32(command.ExecuteScalar());
                             
-                            if (stock <= 0)
+                            if (stock < borrowing.Quantity)
                             {
                                 transaction.Rollback();
-                                return -1; // No stock available
+                                return -1; // Insufficient stock
                             }
                         }
                         
                         // Insert borrowing record
                         string sql = @"
-                            INSERT INTO Borrowings (BookId, MemberId, BorrowDate, DueDate, Status, Fine)
-                            VALUES (@BookId, @MemberId, @BorrowDate, @DueDate, @Status, @Fine);
+                            INSERT INTO Borrowings (BookId, MemberId, BorrowDate, DueDate, Status, Fine, Quantity)
+                            VALUES (@BookId, @MemberId, @BorrowDate, @DueDate, @Status, @Fine, @Quantity);
                             SELECT last_insert_rowid();";
                         
                         int newId;
@@ -604,15 +860,17 @@ namespace SitarLib.Services
                             command.Parameters.AddWithValue("@DueDate", borrowing.DueDate.ToString("yyyy-MM-dd HH:mm:ss"));
                             command.Parameters.AddWithValue("@Status", "Borrowed");
                             command.Parameters.AddWithValue("@Fine", 0);
+                            command.Parameters.AddWithValue("@Quantity", borrowing.Quantity);
                             
                             newId = Convert.ToInt32(command.ExecuteScalar());
                         }
                         
                         // Update book stock
-                        string updateSql = "UPDATE Books SET Stock = Stock - 1 WHERE Id = @BookId;";
+                        string updateSql = "UPDATE Books SET Stock = Stock - @Quantity WHERE Id = @BookId;";
                         using (var command = new SQLiteCommand(updateSql, connection))
                         {
                             command.Parameters.AddWithValue("@BookId", borrowing.BookId);
+                            command.Parameters.AddWithValue("@Quantity", borrowing.Quantity);
                             command.ExecuteNonQuery();
                         }
                         
@@ -640,9 +898,10 @@ namespace SitarLib.Services
                     try
                     {
                         // Get borrowing info first
-                        string getSql = "SELECT BookId, DueDate FROM Borrowings WHERE Id = @Id AND ReturnDate IS NULL;";
+                        string getSql = "SELECT BookId, DueDate, Quantity FROM Borrowings WHERE Id = @Id AND ReturnDate IS NULL;";
                         int bookId;
                         DateTime dueDate;
+                        int quantity;
                         
                         using (var command = new SQLiteCommand(getSql, connection))
                         {
@@ -657,17 +916,18 @@ namespace SitarLib.Services
                                 
                                 bookId = Convert.ToInt32(reader["BookId"]);
                                 dueDate = DateTime.Parse(reader["DueDate"].ToString());
+                                quantity = reader["Quantity"] != DBNull.Value ? Convert.ToInt32(reader["Quantity"]) : 1;
                             }
                         }
                         
-                        // Calculate fine if overdue (assume $1 per day)
+                        // Calculate fine if overdue (assume $1 per day per book)
                         decimal fine = 0;
                         string status = "Returned";
                         
                         TimeSpan overdueSpan = DateTime.Now.Date - dueDate.Date;
                         if (overdueSpan.TotalDays > 1)
                         {
-                            fine = (decimal)overdueSpan.TotalDays * 1.0m;
+                            fine = (decimal)overdueSpan.TotalDays * 1.0m * quantity;
                             status = "Returned Late";
                         }
 
@@ -691,10 +951,11 @@ namespace SitarLib.Services
                         }
                         
                         // Update book stock
-                        string bookSql = "UPDATE Books SET Stock = Stock + 1 WHERE Id = @BookId;";
+                        string bookSql = "UPDATE Books SET Stock = Stock + @Quantity WHERE Id = @BookId;";
                         using (var command = new SQLiteCommand(bookSql, connection))
                         {
                             command.Parameters.AddWithValue("@BookId", bookId);
+                            command.Parameters.AddWithValue("@Quantity", quantity);
                             command.ExecuteNonQuery();
                         }
                         

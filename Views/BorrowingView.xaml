@@ -8,6 +8,62 @@
              d:DesignHeight="800" d:DesignWidth="1200">
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style x:Key="CellText" TargetType="TextBlock">
+            <Setter Property="Margin"            Value="10,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CellTextTrim" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+        <!-- Kuas warna -->
+        <SolidColorBrush x:Key="PlusBrush"  Color="#27ae60"/>  <!-- hijau -->
+        <SolidColorBrush x:Key="MinusBrush" Color="#c0392b"/>  <!-- merah -->
+
+        <!-- Style khusus tombol tambah/kurang -->
+        <Style x:Key="QtyActionButtonStyle" TargetType="Button">
+            <!-- Ukuran & tampilan dasar -->
+            <Setter Property="Width"           Value="30"/>
+            <Setter Property="Height"          Value="24"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin"          Value="5,0,0,0"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+
+            <!-- Default (+) -->
+            <Setter Property="Background" Value="{StaticResource PlusBrush}"/>
+
+            <!-- Template sederhana + efek hover/pressed -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <!-- Jika konten “-” ⇒ ganti jadi merah -->
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="-">
+                    <Setter Property="Background" Value="{StaticResource MinusBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <!-- Style untuk sidebar menu item -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="10,4" />
@@ -420,93 +476,80 @@
                                     Style="{StaticResource SearchButtonStyle}"/>
                         </Grid>
                         
-                        <DataGrid Grid.Row="2" 
-                                  ItemsSource="{Binding Borrowings}" 
+                        <DataGrid Grid.Row="2"
+                                  ItemsSource="{Binding Borrowings}"
                                   SelectedItem="{Binding SelectedBorrowing}"
-                                  Style="{StaticResource CustomDataGridStyle}">
+                                  Style="{StaticResource CustomDataGridStyle}"
+                                  ColumnWidth="*"                   
+                                  HeadersVisibility="Column"
+                                  HorizontalScrollBarVisibility="Disabled">
+
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Book Title" Binding="{Binding Book.Title}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Member" Binding="{Binding Member.FullName}" Width="*">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Borrow Date" Binding="{Binding BorrowDate, StringFormat=d}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat=d}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTextColumn Header="Return Date" Binding="{Binding ReturnDate, StringFormat=d}" Width="Auto">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                
-                                <DataGridTemplateColumn Header="Status" Width="100">
+
+                                <!-- Judul Buku – 3* -->
+                                <DataGridTextColumn Header="Judul Buku"
+                                                    Binding="{Binding Book.Title}"
+                                                    Width="3*"
+                                                    ElementStyle="{StaticResource CellTextTrim}" />
+
+                                <!-- Anggota – 2* -->
+                                <DataGridTextColumn Header="Anggota"
+                                                    Binding="{Binding Member.FullName}"
+                                                    Width="2*"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Borrow Date – 100 px -->
+                                <DataGridTextColumn Header="Borrow Date"
+                                                    Binding="{Binding BorrowDate, StringFormat=d}"
+                                                    Width="100"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Due Date – 100 px -->
+                                <DataGridTextColumn Header="Due Date"
+                                                    Binding="{Binding DueDate, StringFormat=d}"
+                                                    Width="100"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Return Date – 100 px -->
+                                <DataGridTextColumn Header="Return Date"
+                                                    Binding="{Binding ReturnDate, StringFormat=d}"
+                                                    Width="100"
+                                                    ElementStyle="{StaticResource CellText}" />
+
+                                <!-- Status – badge 90 px -->
+                                <DataGridTemplateColumn Header="Status" Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border CornerRadius="3" Padding="8,3" Margin="5,0" HorizontalAlignment="Center">
+                                            <Border CornerRadius="3"
+                                                    Padding="8,3"
+                                                    Margin="5,0"
+                                                    HorizontalAlignment="Center">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#e1f5fe" />
+                                                        <Setter Property="Background" Value="#e1f5fe"/>    <!-- Borrowed -->
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Status}" Value="Overdue">
-                                                                <Setter Property="Background" Value="#ffebee" />
+                                                                <Setter Property="Background" Value="#ffebee"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Returned">
-                                                                <Setter Property="Background" Value="#e8f5e9" />
+                                                                <Setter Property="Background" Value="#e8f5e9"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <TextBlock Text="{Binding Status}" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                                <TextBlock Text="{Binding Status}"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#0288d1" />
+                                                            <Setter Property="Foreground" Value="#0288d1"/>  <!-- Borrowed -->
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Overdue">
-                                                                    <Setter Property="Foreground" Value="#d32f2f" />
+                                                                    <Setter Property="Foreground" Value="#d32f2f"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Returned">
-                                                                    <Setter Property="Foreground" Value="#388e3c" />
+                                                                    <Setter Property="Foreground" Value="#388e3c"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -516,6 +559,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -570,6 +614,44 @@
                                           IsTextSearchEnabled="True"
                                           StaysOpenOnEdit="True"
                                           Style="{StaticResource CustomComboBoxStyle}"/>
+                                
+                                <!-- Quantity Selection -->
+                                <TextBlock Text="Jumlah Buku" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBox Grid.Column="0" 
+                                             Text="{Binding CurrentBorrowing.Quantity, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource CustomTextBoxStyle}"/>
+                                    
+                                    <!-- Tombol Kurang -->
+                                    <Button Grid.Column="1"
+                                            Content="-"
+                                            Command="{Binding DecrementQuantityCommand}"
+                                            Style="{StaticResource QtyActionButtonStyle}" />
+
+                                    <!-- Tombol Tambah -->
+                                    <Button Grid.Column="2"
+                                            Content="+"
+                                            Command="{Binding IncrementQuantityCommand}"
+                                            Style="{StaticResource QtyActionButtonStyle}" />
+
+                                </Grid>
+                                
+                                <TextBlock Text="Stock Available:" 
+                                           Foreground="#777777" 
+                                           FontSize="12" 
+                                           Margin="0,5,0,10" 
+                                           Visibility="{Binding IsBookSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding SelectedBook.Stock}" 
+                                           Foreground="#2980b9" 
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,15"
+                                           Visibility="{Binding IsBookSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 
                                 <!-- Member Selection with Integrated Search -->
                                 <TextBlock Text="Pilih Anggota (Type to search by Name or Code)" Style="{StaticResource FieldLabelStyle}"/>

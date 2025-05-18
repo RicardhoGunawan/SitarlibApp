@@ -227,7 +227,7 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\createdump.exe
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\hostfxr.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\hostpolicy.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\mscordaccore.dll
-C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\mscordaccore_amd64_amd64_9.0.225.6610.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\mscordaccore_amd64_amd64_9.0.525.21509.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\mscordbi.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\mscorrc.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\msquic.dll

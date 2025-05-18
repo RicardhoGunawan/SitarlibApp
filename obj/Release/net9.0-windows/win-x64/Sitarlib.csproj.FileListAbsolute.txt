@@ -280,7 +280,6 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\hostfxr.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\hostpolicy.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscordaccore.dll
-C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscordaccore_amd64_amd64_9.0.225.6610.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscordbi.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscorrc.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\msquic.dll
@@ -475,3 +474,6 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Sitarlib.genruntimeconfig.cache
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\ref\Sitarlib.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\Microsoft.Xaml.Behaviors.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscordaccore_amd64_amd64_9.0.525.21509.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Views\ReportView.g.cs
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Views\ReportView.baml

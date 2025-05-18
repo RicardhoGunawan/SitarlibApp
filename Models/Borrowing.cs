@@ -10,6 +10,8 @@
         public DateTime? ReturnDate { get; set; }
         public string Status { get; set; } // "Borrowed", "Returned", "Overdue"
         //public decimal Fine { get; set; }
+        public int Quantity { get; set; } = 1; // Default value of 1
+
         
         // Navigation properties
         public Book Book { get; set; }

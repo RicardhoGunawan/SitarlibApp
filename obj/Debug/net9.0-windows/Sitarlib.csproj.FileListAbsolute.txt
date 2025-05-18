@@ -7,7 +7,6 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\BouncyCas
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\Dapper.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\EPPlus.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\EPPlus.Interfaces.dll
-C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\EPPlus.System.Drawing.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\itextsharp.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\LiveCharts.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\LiveCharts.Wpf.dll
@@ -114,3 +113,8 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Debug\net9.0-windows\Sitarlib.
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\Microsoft.Xaml.Behaviors.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Debug\net9.0-windows\Views\ReportView.baml
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Debug\net9.0-windows\Views\ReportView.g.cs
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\System.Security.Cryptography.Pkcs.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\System.Security.Cryptography.Xml.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\runtimes\win\lib\net9.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\DocumentFormat.OpenXml.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Debug\net9.0-windows\DocumentFormat.OpenXml.Framework.dll
