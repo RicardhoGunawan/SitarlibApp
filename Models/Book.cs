@@ -14,5 +14,24 @@ namespace SitarLib.Models
         public int Stock { get; set; }
         public string Description { get; set; }
         public DateTime AddedDate { get; set; }
+        
+        // Tambahan untuk cover buku
+        public string CoverImagePath { get; set; }
+        public byte[] CoverImageData { get; set; }
+        
+        // Property untuk mendapatkan path cover image yang valid
+        
+        public string DisplayCoverPath
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(CoverImagePath) && System.IO.File.Exists(CoverImagePath))
+                {
+                    return CoverImagePath;
+                }
+                // Return default cover image path jika tidak ada cover
+                return "/Assets/no-cover.png";
+            }
+        }
     }
 }

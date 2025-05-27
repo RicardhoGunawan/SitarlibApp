@@ -394,11 +394,12 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\zh-Hant\UIAutomationTypes.
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\zh-Hant\WindowsBase.resources.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\BouncyCastle.Crypto.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\Dapper.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\DocumentFormat.OpenXml.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\DocumentFormat.OpenXml.Framework.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\EntityFramework.SqlServer.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\EntityFramework.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\EPPlus.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\EPPlus.Interfaces.dll
-C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\EPPlus.System.Drawing.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\itextsharp.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\LiveCharts.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\publish\LiveCharts.Wpf.dll

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sitarlib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96d0215fd2e7dc819982b8ed9d5d36532a18b611")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e284d28674189569b246a79249ac8595318f05a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sitarlib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sitarlib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

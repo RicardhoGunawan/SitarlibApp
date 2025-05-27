@@ -604,16 +604,256 @@
                                            FontSize="12" 
                                            Margin="0,0,0,20"/>
                                 
-                                <!-- Book Selection with Integrated Search -->
                                 <TextBlock Text="Pilih Buku (Type to search by Title or ISBN)" Style="{StaticResource FieldLabelStyle}"/>
+                                
+                                <!-- Enhanced ComboBox with Book Cover in Dropdown -->
                                 <ComboBox ItemsSource="{Binding FilteredBooks}"
-                                          SelectedItem="{Binding SelectedBook}"
-                                          Text="{Binding BookSearchText, UpdateSourceTrigger=PropertyChanged}"
-                                          DisplayMemberPath="Title"
-                                          IsEditable="True"
-                                          IsTextSearchEnabled="True"
-                                          StaysOpenOnEdit="True"
-                                          Style="{StaticResource CustomComboBoxStyle}"/>
+                                      SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
+                                      Text="{Binding BookSearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="False"
+                                      TextSearch.TextPath="Title"
+                                      StaysOpenOnEdit="True"
+                                      Style="{StaticResource CustomComboBoxStyle}"
+                                      MaxDropDownHeight="350"
+                                      Margin="0,5,0,10">
+                                
+                                    <!-- Template for items in dropdown list -->
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="Transparent" 
+                                                    Padding="8,6"
+                                                    Margin="2,1"
+                                                    CornerRadius="6"
+                                                    BorderThickness="1"
+                                                    BorderBrush="Transparent">
+                                                
+                                                <!-- Hover effect -->
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                                                <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="50"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="60"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <!-- Book Cover with Shadow -->
+                                                    <Border Grid.Column="0" 
+                                                            Width="40" 
+                                                            Height="52" 
+                                                            CornerRadius="4"
+                                                            Background="White"
+                                                            BorderBrush="#E1E5E9" 
+                                                            BorderThickness="1">
+                                                        <!-- Drop shadow effect -->
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="Black" 
+                                                                              Opacity="0.1" 
+                                                                              BlurRadius="4" 
+                                                                              ShadowDepth="2" 
+                                                                              Direction="315"/>
+                                                        </Border.Effect>
+                                                        
+                                                        <Image Source="{Binding DisplayCoverPath}" 
+                                                               Stretch="UniformToFill"
+                                                               RenderOptions.BitmapScalingMode="HighQuality"
+                                                               ClipToBounds="True"/>
+                                                    </Border>
+                                                    
+                                                    <!-- Book Details with Better Spacing -->
+                                                    <StackPanel Grid.Column="1" 
+                                                                Margin="12,2,8,2"
+                                                                VerticalAlignment="Center">
+                                                        
+                                                        <!-- Book Title -->
+                                                        <TextBlock Text="{Binding Title}" 
+                                                                   FontWeight="SemiBold" 
+                                                                   FontSize="13"
+                                                                   Foreground="#2C3E50"
+                                                                   TextWrapping="NoWrap"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   LineHeight="16"/>
+                                                                   
+                                                        <!-- Author -->
+                                                        <TextBlock Text="{Binding Author}" 
+                                                                   FontSize="11" 
+                                                                   Foreground="#6C757D"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Margin="0,2,0,0"
+                                                                   LineHeight="14"/>
+                                                                   
+                                                        <!-- ISBN with Icon -->
+                                                        <StackPanel Orientation="Horizontal" 
+                                                                    Margin="0,3,0,0">
+                                                            <TextBlock Text="📚 " 
+                                                                       FontSize="9" 
+                                                                       Foreground="#ADB5BD"
+                                                                       VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding ISBN}" 
+                                                                       FontSize="10" 
+                                                                       Foreground="#ADB5BD"
+                                                                       VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        
+                                                        <!-- Category Badge -->
+                                                        <Border Background="#E3F2FD" 
+                                                                CornerRadius="8"
+                                                                Padding="4,1"
+                                                                Margin="0,3,0,0"
+                                                                HorizontalAlignment="Left"
+                                                                MaxWidth="120">
+                                                            <TextBlock Text="{Binding Category}" 
+                                                                       FontSize="9" 
+                                                                       Foreground="#1976D2"
+                                                                       FontWeight="Medium"
+                                                                       TextTrimming="CharacterEllipsis"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Stock Info with Better Design -->
+                                                    <StackPanel Grid.Column="2" 
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="4,0">
+                                                        
+                                                        <!-- Stock Number with Gradient -->
+                                                        <Border CornerRadius="12"
+                                                                Padding="8,4"
+                                                                MinWidth="32"
+                                                                HorizontalAlignment="Center">
+                                                            <Border.Background>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                    <GradientStop Color="#27AE60" Offset="0"/>
+                                                                    <GradientStop Color="#2ECC71" Offset="1"/>
+                                                                </LinearGradientBrush>
+                                                            </Border.Background>
+                                                            
+                                                            <!-- Drop shadow for stock badge -->
+                                                            <Border.Effect>
+                                                                <DropShadowEffect Color="#27AE60" 
+                                                                                  Opacity="0.3" 
+                                                                                  BlurRadius="6" 
+                                                                                  ShadowDepth="2" 
+                                                                                  Direction="315"/>
+                                                            </Border.Effect>
+                                                            
+                                                            <TextBlock Text="{Binding Stock}" 
+                                                                       Foreground="White"
+                                                                       FontSize="11"
+                                                                       FontWeight="Bold"
+                                                                       HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        
+                                                        <!-- "Available" Text -->
+                                                        <TextBlock Text="available" 
+                                                                   FontSize="8" 
+                                                                   Foreground="#6C757D"
+                                                                   HorizontalAlignment="Center"
+                                                                   Margin="0,2,0,0"
+                                                                   FontStyle="Italic"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                    
+                                    <!-- Improved Item Container Style -->
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsHighlighted" Value="True">
+                                                    <Setter Property="Background" Value="#E8F5E8"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#D4F4DD"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                 </ComboBox>
+
+                                <!-- Book Preview Section - Ditampilkan ketika buku dipilih -->
+                                <Border Visibility="{Binding IsBookSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Background="#f8f9fa"
+                                        BorderThickness="1"
+                                        BorderBrush="#e9ecef"
+                                        CornerRadius="5"
+                                        Padding="15"
+                                        Margin="0,10,0,15">
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Larger Cover Image -->
+                                        <Border Grid.Column="0" 
+                                                Width="70" 
+                                                Height="90" 
+                                                CornerRadius="4"
+                                                BorderBrush="#CCCCCC" 
+                                                BorderThickness="1">
+                                            <Image Source="{Binding SelectedBook.DisplayCoverPath}" 
+                                                   Stretch="UniformToFill"
+                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border>
+                                        
+                                        <!-- Detailed Book Info -->
+                                        <StackPanel Grid.Column="1" 
+                                                    Margin="15,0,0,0">
+                                            <TextBlock Text="{Binding SelectedBook.Title}" 
+                                                       FontWeight="Bold" 
+                                                       FontSize="14"
+                                                       Foreground="#2c3e50"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,3"/>
+                                                       
+                                            <TextBlock Text="{Binding SelectedBook.Author}" 
+                                                       FontSize="12" 
+                                                       Foreground="#7f8c8d"
+                                                       Margin="0,0,0,2"/>
+                                                       
+                                            <TextBlock Text="{Binding SelectedBook.Publisher}" 
+                                                       FontSize="11" 
+                                                       Foreground="#95a5a6"
+                                                       Margin="0,0,0,2"/>
+                                                       
+                                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                <TextBlock Text="Available Stock: " 
+                                                           FontSize="11" 
+                                                           Foreground="#7f8c8d"/>
+                                                <TextBlock Text="{Binding SelectedBook.Stock}" 
+                                                           FontSize="11" 
+                                                           Foreground="#27ae60"
+                                                           FontWeight="Bold"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                <TextBlock Text="Category: " 
+                                                           FontSize="11" 
+                                                           Foreground="#7f8c8d"/>
+                                                <TextBlock Text="{Binding SelectedBook.Category}" 
+                                                           FontSize="11" 
+                                                           Foreground="#8e44ad"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
                                 
                                 <!-- Quantity Selection -->
                                 <TextBlock Text="Jumlah Buku" Style="{StaticResource FieldLabelStyle}"/>
@@ -639,19 +879,7 @@
                                             Content="+"
                                             Command="{Binding IncrementQuantityCommand}"
                                             Style="{StaticResource QtyActionButtonStyle}" />
-
                                 </Grid>
-                                
-                                <TextBlock Text="Stock Available:" 
-                                           Foreground="#777777" 
-                                           FontSize="12" 
-                                           Margin="0,5,0,10" 
-                                           Visibility="{Binding IsBookSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                <TextBlock Text="{Binding SelectedBook.Stock}" 
-                                           Foreground="#2980b9" 
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,15"
-                                           Visibility="{Binding IsBookSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 
                                 <!-- Member Selection with Integrated Search -->
                                 <TextBlock Text="Pilih Anggota (Type to search by Name or Code)" Style="{StaticResource FieldLabelStyle}"/>

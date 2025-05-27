@@ -9,7 +9,6 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\EntityFramework.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\EPPlus.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\EPPlus.Interfaces.dll
-C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\EPPlus.System.Drawing.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\itextsharp.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\LiveCharts.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\LiveCharts.Wpf.dll
@@ -477,3 +476,5 @@ C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\mscordaccore_amd64_amd64_9.0.525.21509.dll
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Views\ReportView.g.cs
 C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\obj\Release\net9.0-windows\win-x64\Views\ReportView.baml
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\DocumentFormat.OpenXml.dll
+C:\Users\ASUS\RiderProjects\Sitarlib\Sitarlib\bin\Release\net9.0-windows\win-x64\DocumentFormat.OpenXml.Framework.dll

@@ -64,7 +64,9 @@ namespace SitarLib.Services
                     Category TEXT,
                     Stock INTEGER,
                     Description TEXT,
-                    AddedDate TEXT
+                    AddedDate TEXT,
+                    CoverImagePath TEXT,
+                    CoverImageData BLOB
                 );";
                     
             ExecuteNonQuery(connection, sql);
@@ -247,10 +249,11 @@ namespace SitarLib.Services
 
         #region Book Methods
         
+        // Update GetAllBooks method
         public List<Book> GetAllBooks()
         {
             string sql = "SELECT * FROM Books ORDER BY Title;";
-            
+    
             return ExecuteQuery(sql, reader => new Book
             {
                 Id = Convert.ToInt32(reader["Id"]),
@@ -262,7 +265,9 @@ namespace SitarLib.Services
                 Category = reader["Category"].ToString(),
                 Stock = reader["Stock"] != DBNull.Value ? Convert.ToInt32(reader["Stock"]) : 0,
                 Description = reader["Description"].ToString(),
-                AddedDate = reader["AddedDate"] != DBNull.Value ? DateTime.Parse(reader["AddedDate"].ToString()) : DateTime.Now
+                AddedDate = reader["AddedDate"] != DBNull.Value ? DateTime.Parse(reader["AddedDate"].ToString()) : DateTime.Now,
+                CoverImagePath = reader["CoverImagePath"]?.ToString(),
+                CoverImageData = reader["CoverImageData"] != DBNull.Value ? (byte[])reader["CoverImageData"] : null
             });
         }
         
@@ -270,7 +275,7 @@ namespace SitarLib.Services
         {
             string sql = "SELECT * FROM Books WHERE Id = @Id;";
             var parameters = new Dictionary<string, object> { { "Id", id } };
-            
+    
             var books = ExecuteQuery(sql, reader => new Book
             {
                 Id = Convert.ToInt32(reader["Id"]),
@@ -282,19 +287,22 @@ namespace SitarLib.Services
                 Category = reader["Category"].ToString(),
                 Stock = reader["Stock"] != DBNull.Value ? Convert.ToInt32(reader["Stock"]) : 0,
                 Description = reader["Description"].ToString(),
-                AddedDate = reader["AddedDate"] != DBNull.Value ? DateTime.Parse(reader["AddedDate"].ToString()) : DateTime.Now
+                AddedDate = reader["AddedDate"] != DBNull.Value ? DateTime.Parse(reader["AddedDate"].ToString()) : DateTime.Now,
+                CoverImagePath = reader["CoverImagePath"]?.ToString(),
+                CoverImageData = reader["CoverImageData"] != DBNull.Value ? (byte[])reader["CoverImageData"] : null
             }, parameters);
-            
+    
             return books.Count > 0 ? books[0] : null;
         }
         
+        // Update AddBook method
         public int AddBook(Book book)
         {
             string sql = @"
-                INSERT INTO Books (ISBN, Title, Author, Publisher, PublicationYear, Category, Stock, Description, AddedDate)
-                VALUES (@ISBN, @Title, @Author, @Publisher, @PublicationYear, @Category, @Stock, @Description, @AddedDate);
-                SELECT last_insert_rowid();";
-            
+            INSERT INTO Books (ISBN, Title, Author, Publisher, PublicationYear, Category, Stock, Description, AddedDate, CoverImagePath, CoverImageData)
+            VALUES (@ISBN, @Title, @Author, @Publisher, @PublicationYear, @Category, @Stock, @Description, @AddedDate, @CoverImagePath, @CoverImageData);
+            SELECT last_insert_rowid();";
+    
             var parameters = new Dictionary<string, object>
             {
                 { "ISBN", book.ISBN },
@@ -305,26 +313,31 @@ namespace SitarLib.Services
                 { "Category", book.Category ?? (object)DBNull.Value },
                 { "Stock", book.Stock },
                 { "Description", book.Description ?? (object)DBNull.Value },
-                { "AddedDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") }
+                { "AddedDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
+                { "CoverImagePath", book.CoverImagePath ?? (object)DBNull.Value },
+                { "CoverImageData", book.CoverImageData ?? (object)DBNull.Value }
             };
-            
+    
             return ExecuteScalar<int>(sql, parameters);
         }
         
+        // Update UpdateBook method
         public bool UpdateBook(Book book)
         {
             string sql = @"
-                UPDATE Books
-                SET ISBN = @ISBN,
-                    Title = @Title,
-                    Author = @Author,
-                    Publisher = @Publisher,
-                    PublicationYear = @PublicationYear,
-                    Category = @Category,
-                    Stock = @Stock,
-                    Description = @Description
-                WHERE Id = @Id;";
-            
+            UPDATE Books
+            SET ISBN = @ISBN,
+                Title = @Title,
+                Author = @Author,
+                Publisher = @Publisher,
+                PublicationYear = @PublicationYear,
+                Category = @Category,
+                Stock = @Stock,
+                Description = @Description,
+                CoverImagePath = @CoverImagePath,
+                CoverImageData = @CoverImageData
+            WHERE Id = @Id;";
+    
             var parameters = new Dictionary<string, object>
             {
                 { "Id", book.Id },
@@ -335,9 +348,11 @@ namespace SitarLib.Services
                 { "PublicationYear", book.PublicationYear },
                 { "Category", book.Category ?? (object)DBNull.Value },
                 { "Stock", book.Stock },
-                { "Description", book.Description ?? (object)DBNull.Value }
+                { "Description", book.Description ?? (object)DBNull.Value },
+                { "CoverImagePath", book.CoverImagePath ?? (object)DBNull.Value },
+                { "CoverImageData", book.CoverImageData ?? (object)DBNull.Value }
             };
-            
+    
             return ExecuteNonQuery(sql, parameters) > 0;
         }
         
@@ -393,31 +408,44 @@ namespace SitarLib.Services
         }
         public async Task<(int imported, int duplicates)> ImportBooksFromFileAsync(string filePath, string fileType)
         {
-            return await Task.Run(() => 
+            return await Task.Run(() =>
             {
-                int imported = -1;
-                int duplicates = 0;
-
-                if (fileType.ToLower() == "csv")
+                try
                 {
-                    // Ubah untuk menerima tuple yang berisi imported dan duplicates
-                    var result = ImportBooksFromCsv(filePath);
-                    imported = result.imported;
-                    duplicates = result.duplicates;
-                }
-                else if (fileType.ToLower() == "xlsx")
-                {
-                    // Ubah untuk menerima tuple yang berisi imported dan duplicates
-                    var result = ImportBooksFromXlsx(filePath);
-                    imported = result.imported;
-                    duplicates = result.duplicates;
-                }
+                    int imported = -1;
+                    int duplicates = 0;
 
-                return (imported, duplicates);
+                    if (fileType.ToLower() == "csv")
+                    {
+                        var result = ImportBooksFromCsv(filePath);
+                        imported = result.imported;
+                        duplicates = result.duplicates;
+                    }
+                    else if (fileType.ToLower() == "xlsx")
+                    {
+                        var result = ImportBooksFromXlsx(filePath);
+                        imported = result.imported;
+                        duplicates = result.duplicates;
+                    }
+                    else
+                    {
+                        imported = -1;
+                        duplicates = 0;
+                    }
+
+                    return (imported, duplicates);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[ImportBooksFromFileAsync] Error: {ex}");
+                    return (-1, 0);
+                }
             });
         }
+
         // Modified ImportBooksFromCsv method to check for duplicates
         // Ubah return type menjadi tuple untuk mengembalikan jumlah yang diimpor dan duplikat
+        // Update ImportBooksFromCsv method
         public (int imported, int duplicates) ImportBooksFromCsv(string filePath)
         {
             int importedCount = 0;
@@ -425,16 +453,13 @@ namespace SitarLib.Services
             
             try
             {
-                // Check if file exists
                 if (!File.Exists(filePath))
                 {
                     return (-1, 0);
                 }
                 
-                // Read all lines from the CSV file
                 string[] lines = File.ReadAllLines(filePath);
                 
-                // Skip header row
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string line = lines[i];
@@ -443,20 +468,24 @@ namespace SitarLib.Services
                     
                     string[] parts = line.Split(',');
                     
-                    // Validate the CSV format (should have at least basic required fields)
                     if (parts.Length < 3)
                         continue;
                     
                     string isbn = parts[0].Trim('"');
                     
-                    // Check if book already exists
                     if (BookExists(isbn))
                     {
                         duplicateCount++;
-                        continue; // Skip this book
+                        continue;
                     }
                     
-                    // Create a new book object
+                    string coverPath = parts.Length > 8 ? parts[8].Trim('"') : null;
+
+                    if (string.IsNullOrWhiteSpace(coverPath) || !File.Exists(coverPath))
+                    {
+                        coverPath = "Assets/no-cover.png";
+                    }
+                    
                     Book book = new Book
                     {
                         ISBN = isbn,
@@ -467,15 +496,14 @@ namespace SitarLib.Services
                         Category = parts.Length > 5 ? parts[5].Trim('"') : null,
                         Stock = parts.Length > 6 && int.TryParse(parts[6].Trim('"'), out int stock) ? stock : 1,
                         Description = parts.Length > 7 ? parts[7].Trim('"') : null,
+                        CoverImagePath = coverPath,  // <-- gunakan variabel coverPath yang sudah dicek
                         AddedDate = DateTime.Now
                     };
                     
-                    // Add the book to the database
                     AddBook(book);
                     importedCount++;
                 }
                 
-                // Return both the imported count and duplicate count
                 return (importedCount, duplicateCount);
             }
             catch (Exception ex)
@@ -484,8 +512,10 @@ namespace SitarLib.Services
                 return (-1, 0);
             }
         }
+
         // Modified ImportBooksFromXlsx method to check for duplicates
         // Ubah return type menjadi tuple untuk mengembalikan jumlah yang diimpor dan duplikat
+        // Update ImportBooksFromXlsx method
         public (int imported, int duplicates) ImportBooksFromXlsx(string filePath)
         {
             int importedCount = 0;
@@ -516,12 +546,19 @@ namespace SitarLib.Services
                             continue;
 
                         string isbn = values[0];
-                        
+
                         // Check if book already exists
                         if (BookExists(isbn))
                         {
                             duplicateCount++;
                             continue; // Skip this book
+                        }
+
+                        // Ambil cover path jika ada, lalu cek ada/tidaknya file, jika tidak ada gunakan default
+                        string coverPath = values.ContainsKey(8) ? values[8] : null;
+                        if (string.IsNullOrWhiteSpace(coverPath) || !File.Exists(coverPath))
+                        {
+                            coverPath = "Assets/no-cover.png";
                         }
 
                         var book = new Book
@@ -534,6 +571,7 @@ namespace SitarLib.Services
                             Category = values.ContainsKey(5) ? values[5] : null,
                             Stock = values.ContainsKey(6) && int.TryParse(values[6], out var s) ? s : 1,
                             Description = values.ContainsKey(7) ? values[7] : null,
+                            CoverImagePath = coverPath, // Gunakan coverPath yang sudah dicek
                             AddedDate = DateTime.Now
                         };
 
@@ -542,7 +580,6 @@ namespace SitarLib.Services
                     }
                 }
 
-                // Return both the imported count and duplicate count
                 return (importedCount, duplicateCount);
             }
             catch (Exception ex)
@@ -551,6 +588,7 @@ namespace SitarLib.Services
                 return (-1, 0);
             }
         }
+
         // Helper method to extract cell values from Excel
         private Dictionary<int, string> GetRowValues(Row row, WorkbookPart wp)
         {

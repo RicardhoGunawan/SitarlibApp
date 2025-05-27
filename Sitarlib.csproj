@@ -39,6 +39,8 @@
       <None Remove="Assets\SMAN-TKN-PABAR.png" />
       <None Remove="Assets\SMAN-TKN-PABAR.ico" />
       <Resource Include="Assets\SMAN-TKN-PABAR.ico" />
+      <None Remove="Assets\no-cover.png" />
+      <Resource Include="Assets\no-cover.png" />
     </ItemGroup>
 
 </Project>

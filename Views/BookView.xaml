@@ -10,6 +10,22 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
        <!-- Improved Button Import Styles -->
+        <!-- Tambahkan di UserControl.Resources -->
+        <Style x:Key="CoverPreviewStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="140"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="5" 
+                                      ShadowDepth="2" 
+                                      Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="ModernImportButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#2196F3"/>
             <Setter Property="Foreground" Value="White"/>
@@ -665,7 +681,9 @@
                                   Style="{StaticResource CustomDataGridStyle}"
                                   ColumnWidth="*"                   
                                   HeadersVisibility="Column"
+                                  RowHeight="70"
                                   HorizontalScrollBarVisibility="Disabled">
+                            
 
                             <DataGrid.Columns>
 
@@ -674,6 +692,19 @@
                                                     Binding="{Binding ISBN}"
                                                     Width="130"
                                                     ElementStyle="{StaticResource CellText}" />
+                                <!-- Cover Book -->
+                                <DataGridTemplateColumn Header="Cover" Width="80">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding DisplayCoverPath}"
+                                                   Width="60" Height="80"
+                                                   Stretch="Uniform"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+
+
 
                                 <!-- Judul – bobot terbesar -->
                                 <DataGridTextColumn Header="Judul"
@@ -752,6 +783,54 @@
                                 <TextBlock Text="ISBN" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.ISBN, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource FormInputStyle}"/>
+                                
+                                <!-- Cover -->
+                                <TextBlock Text="Cover Buku" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid Margin="0,5,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <!-- Preview Cover -->
+                                    <Border Grid.Column="0" 
+                                            BorderBrush="#DDDDDD" 
+                                            BorderThickness="1" 
+                                            CornerRadius="4"
+                                            Width="100" 
+                                            Height="140">
+                                        <Image Source="{Binding CurrentBook.DisplayCoverPath}"
+                                               Stretch="Uniform"
+                                               Margin="5"/>
+                                    </Border>
+
+                                    
+                                    <!-- Upload Buttons -->
+                                    <StackPanel Grid.Column="1" 
+                                                Margin="15,0,0,0"
+                                                VerticalAlignment="Center">
+                                        <Button Command="{Binding SelectCoverImageCommand}"
+                                                Style="{StaticResource ActionButtonStyle}"
+                                                Background="#3498db"
+                                                Margin="0,0,0,10"
+                                                Padding="10,5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🖼️" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Pilih Cover"/>
+                                            </StackPanel>
+                                        </Button>
+                                        
+                                        <Button Command="{Binding RemoveCoverImageCommand}"
+                                                Style="{StaticResource ActionButtonStyle}"
+                                                Background="#e74c3c"
+                                                Padding="10,5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="❌" FontSize="16" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Hapus Cover"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
 
                                 <TextBlock Text="Judul" Style="{StaticResource FieldLabelStyle}"/>
                                 <TextBox Text="{Binding CurrentBook.Title, UpdateSourceTrigger=PropertyChanged}"

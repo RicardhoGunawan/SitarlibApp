@@ -1,8 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
+using Microsoft.Win32;
 using SitarLib.Helpers;
 using SitarLib.Models;
 using SitarLib.Services;
+
 
 namespace SitarLib.ViewModels
 {
@@ -16,6 +19,7 @@ namespace SitarLib.ViewModels
         }
 
         private Book _selectedBook;
+
         public Book SelectedBook
         {
             get => _selectedBook;
@@ -35,7 +39,9 @@ namespace SitarLib.ViewModels
                         Category = value.Category,
                         Stock = value.Stock,
                         Description = value.Description,
-                        AddedDate = value.AddedDate
+                        AddedDate = value.AddedDate,
+                        CoverImagePath = value.CoverImagePath,
+                        CoverImageData = value.CoverImageData
                     };
                     IsEditing = true;
                 }
@@ -108,6 +114,9 @@ namespace SitarLib.ViewModels
         public ICommand ShowImportOptionsCommand { get; }
         public ICommand ImportCsvCommand { get; }
         public ICommand ImportXlsxCommand { get; }
+        // New commands for cover image
+        public ICommand SelectCoverImageCommand { get; }
+        public ICommand RemoveCoverImageCommand { get; }
         
 
 
@@ -130,10 +139,90 @@ namespace SitarLib.ViewModels
             ImportCsvCommand = new RelayCommand(_ => ExecuteImportBooks("csv"));
             ImportXlsxCommand = new RelayCommand(_ => ExecuteImportBooks("xlsx"));
             
+            // New commands
+            SelectCoverImageCommand = new RelayCommand(_ => ExecuteSelectCoverImage());
+            RemoveCoverImageCommand = new RelayCommand(_ => ExecuteRemoveCoverImage(), _ => CurrentBook != null && !string.IsNullOrEmpty(CurrentBook.CoverImagePath));
+            
             BusyMessage = "Loading...";
             
             LoadBooks();
             ExecuteAddNew(); // Start with a new book form
+        }
+        // New method to select cover image
+        private void ExecuteSelectCoverImage()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = "Pilih Cover Buku",
+                Filter = "Image Files (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files (*.*)|*.*",
+                FilterIndex = 1
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string selectedPath = openFileDialog.FileName;
+                    
+                    // Create covers directory if it doesn't exist
+                    string coversDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Covers");
+                    if (!Directory.Exists(coversDirectory))
+                    {
+                        Directory.CreateDirectory(coversDirectory);
+                    }
+
+                    // Generate unique filename
+                    string fileExtension = Path.GetExtension(selectedPath);
+                    string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                    string destinationPath = Path.Combine(coversDirectory, uniqueFileName);
+
+                    // Copy file to covers directory
+                    File.Copy(selectedPath, destinationPath, true);
+
+                    // Update current book
+                    if (CurrentBook != null)
+                    {
+                        CurrentBook.CoverImagePath = destinationPath;
+                        OnPropertyChanged(nameof(CurrentBook));
+                    }
+
+                    DialogService.ShowMessage("Cover buku berhasil dipilih!");
+                }
+                catch (Exception ex)
+                {
+                    DialogService.ShowMessage($"Gagal memilih cover buku: {ex.Message}");
+                }
+            }
+        }
+        // New method to remove cover image
+        private void ExecuteRemoveCoverImage()
+        {
+            if (CurrentBook != null)
+            {
+                bool confirm = DialogService.ShowConfirmation("Apakah Anda yakin ingin menghapus cover buku ini?");
+                if (confirm)
+                {
+                    // Delete physical file if exists
+                    if (!string.IsNullOrEmpty(CurrentBook.CoverImagePath) && File.Exists(CurrentBook.CoverImagePath))
+                    {
+                        try
+                        {
+                            File.Delete(CurrentBook.CoverImagePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log error but continue
+                            System.Diagnostics.Debug.WriteLine($"Failed to delete cover file: {ex.Message}");
+                        }
+                    }
+
+                    CurrentBook.CoverImagePath = null;
+                    CurrentBook.CoverImageData = null;
+                    OnPropertyChanged(nameof(CurrentBook));
+                    
+                    DialogService.ShowMessage("Cover buku berhasil dihapus!");
+                }
+            }
         }
         // Async import method
         private async void ExecuteImportBooks(string fileType)

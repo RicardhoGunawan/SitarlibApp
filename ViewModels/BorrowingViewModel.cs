@@ -61,16 +61,33 @@ namespace SitarLib.ViewModels
             set => SetProperty(ref _filteredMembers, value);
         }
 
+        // Property untuk mengecek apakah ada buku yang dipilih
+        public bool IsBookSelected => SelectedBook != null;
+
+        // Enhanced SelectedBook property dengan logic yang diperbaiki
         private Book _selectedBook;
         public Book SelectedBook
         {
             get => _selectedBook;
             set
             {
-                if (SetProperty(ref _selectedBook, value) && value != null)
+                if (SetProperty(ref _selectedBook, value))
                 {
-                    CurrentBorrowing.BookId = value.Id;
-                    CurrentBorrowing.Book = value;
+                    // Debug logging
+                    System.Diagnostics.Debug.WriteLine($"Book selected: {value?.Title ?? "null"}");
+            
+                    if (value != null && CurrentBorrowing != null)
+                    {
+                        CurrentBorrowing.BookId = value.Id;
+                        CurrentBorrowing.Book = value;
+                
+                        // Update search text to match selected book WITHOUT triggering filter
+                        _bookSearchText = value.Title;
+                        OnPropertyChanged(nameof(BookSearchText));
+                    }
+            
+                    // Notify UI bahwa IsBookSelected berubah
+                    OnPropertyChanged(nameof(IsBookSelected));
                 }
             }
         }
@@ -85,6 +102,13 @@ namespace SitarLib.ViewModels
                 {
                     CurrentBorrowing.MemberId = value.Id;
                     CurrentBorrowing.Member = value;
+                    
+                    // Clear search text when member is selected from dropdown
+                    if (!string.IsNullOrEmpty(MemberSearchText))
+                    {
+                        _memberSearchText = value.FullName;
+                        OnPropertyChanged(nameof(MemberSearchText));
+                    }
                 }
             }
         }
@@ -103,6 +127,8 @@ namespace SitarLib.ViewModels
         }
 
         private string _bookSearchText = string.Empty;
+        private bool _isBookSearchTextUpdating = false; // Flag to prevent recursive updates
+
         public string BookSearchText
         {
             get => _bookSearchText;
@@ -110,8 +136,16 @@ namespace SitarLib.ViewModels
             {
                 if (SetProperty(ref _bookSearchText, value))
                 {
-                    // Filter as the user types in the combo box
-                    FilterBooks();
+                    if (!_isBookSearchTextUpdating)
+                    {
+                        // Clear selected book if user is typing something different
+                        if (SelectedBook != null && value != SelectedBook.Title)
+                        {
+                            SelectedBook = null;
+                        }
+                
+                        FilterBooks();
+                    }
                 }
             }
         }
@@ -124,8 +158,11 @@ namespace SitarLib.ViewModels
             {
                 if (SetProperty(ref _memberSearchText, value))
                 {
-                    // Filter as the user types in the combo box
-                    FilterMembers();
+                    // Only filter if the text doesn't match current selected member
+                    if (SelectedMember == null || value != SelectedMember.FullName)
+                    {
+                        FilterMembers();
+                    }
                 }
             }
         }
@@ -158,7 +195,6 @@ namespace SitarLib.ViewModels
         public ICommand NavigateToBorrowingCommand { get; }
         public ICommand NavigateToReportCommand { get; }
         
-        // Add quantity commands as public properties
         public ICommand IncrementQuantityCommand { get; private set; }
         public ICommand DecrementQuantityCommand { get; private set; }
         
@@ -175,7 +211,8 @@ namespace SitarLib.ViewModels
             ICommand navigateToBookCommand,
             ICommand refreshDataCommand,
             ICommand searchBooksCommand,
-            ICommand searchMembersCommand, ICommand navigateToReportCommand)
+            ICommand searchMembersCommand, 
+            ICommand navigateToReportCommand)
             : base(dataService, dialogService, navigationService)
         {
             // Injected command bindings
@@ -217,7 +254,6 @@ namespace SitarLib.ViewModels
             ExecuteAddNew();
         }
 
-        // Basic quantity command implementations without complex validation
         private void ExecuteIncrementQuantity()
         {
             if (CurrentBorrowing != null && SelectedBook != null)
@@ -251,6 +287,13 @@ namespace SitarLib.ViewModels
             var books = DataService.GetAllBooks().Where(b => b.Stock > 0).ToList();
             AvailableBooks = new ObservableCollection<Book>(books);
             FilteredBooks = new ObservableCollection<Book>(books);
+            
+            // Debug: Check if books have cover paths
+            System.Diagnostics.Debug.WriteLine($"Loaded {books.Count} books");
+            foreach (var book in books.Take(3)) // Log first 3 books
+            {
+                System.Diagnostics.Debug.WriteLine($"Book: {book.Title}, Cover: {book.DisplayCoverPath}");
+            }
         }
 
         private void LoadActiveMembers()
@@ -264,7 +307,6 @@ namespace SitarLib.ViewModels
         {
             var allBorrowings = DataService.GetAllBorrowings();
     
-            // Filter by status if needed
             if (FilterStatus != "All")
             {
                 allBorrowings = new List<Borrowing>(
@@ -272,7 +314,6 @@ namespace SitarLib.ViewModels
                 );
             }
     
-            // Filter by search text if provided
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 var searchTerm = SearchText.ToLower();
@@ -285,17 +326,16 @@ namespace SitarLib.ViewModels
                 );
             }
     
-            // Convert List to ObservableCollection
             Borrowings = new ObservableCollection<Borrowing>(allBorrowings);
         }
 
+        // Improved FilterBooks method
         private void FilterBooks()
         {
             if (AvailableBooks == null) return;
-            
+    
             if (string.IsNullOrWhiteSpace(BookSearchText))
             {
-                // If no search text, show all available books
                 FilteredBooks = new ObservableCollection<Book>(AvailableBooks);
                 return;
             }
@@ -303,10 +343,22 @@ namespace SitarLib.ViewModels
             var searchTerm = BookSearchText.ToLower();
             var filteredBooks = AvailableBooks.Where(book => 
                 (book.Title != null && book.Title.ToLower().Contains(searchTerm)) || 
-                (book.ISBN != null && book.ISBN.ToLower().Contains(searchTerm))
+                (book.ISBN != null && book.ISBN.ToLower().Contains(searchTerm)) ||
+                (book.Author != null && book.Author.ToLower().Contains(searchTerm))
             ).ToList();
 
             FilteredBooks = new ObservableCollection<Book>(filteredBooks);
+        }
+        // Method to handle book selection programmatically
+        public void SelectBook(Book book)
+        {
+            if (book != null)
+            {
+                _isBookSearchTextUpdating = true;
+                SelectedBook = book;
+                BookSearchText = book.Title;
+                _isBookSearchTextUpdating = false;
+            }
         }
 
         private void FilterMembers()
@@ -315,7 +367,6 @@ namespace SitarLib.ViewModels
             
             if (string.IsNullOrWhiteSpace(MemberSearchText))
             {
-                // If no search text, show all active members
                 FilteredMembers = new ObservableCollection<Member>(ActiveMembers);
                 return;
             }
@@ -329,22 +380,27 @@ namespace SitarLib.ViewModels
             FilteredMembers = new ObservableCollection<Member>(filteredMembers);
         }
 
+        // Updated ExecuteAddNew method
         private void ExecuteAddNew()
         {
             CurrentBorrowing = new Borrowing
             {
                 BorrowDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(3), // Default loan period: 1 week
-                Quantity = 1 // Initialize with quantity 1
+                DueDate = DateTime.Now.AddDays(3),
+                Quantity = 1
             };
+    
+            // Reset selections
+            _isBookSearchTextUpdating = true;
             SelectedBook = null;
             SelectedMember = null;
             SelectedBorrowing = null;
-            
+    
             // Reset search fields
             BookSearchText = string.Empty;
             MemberSearchText = string.Empty;
-            
+            _isBookSearchTextUpdating = false;
+    
             // Reset filtered collections
             FilterBooks();
             FilterMembers();
@@ -354,12 +410,13 @@ namespace SitarLib.ViewModels
         {
             return CurrentBorrowing != null &&
                    SelectedBook != null &&
-                   SelectedMember != null;
+                   SelectedMember != null &&
+                   CurrentBorrowing.Quantity > 0 &&
+                   CurrentBorrowing.Quantity <= SelectedBook.Stock;
         }
 
         private void ExecuteBorrow()
         {
-            // Basic validation
             if (CurrentBorrowing.Quantity <= 0 || 
                 (SelectedBook != null && SelectedBook.Stock < CurrentBorrowing.Quantity))
             {
@@ -371,8 +428,8 @@ namespace SitarLib.ViewModels
             DialogService.ShowMessage($"{CurrentBorrowing.Quantity} buku berhasil dipinjam!");
             
             LoadBorrowings();
-            LoadAvailableBooks(); // Refresh available books as stock changed
-            ExecuteAddNew(); // Reset form for a new entry
+            LoadAvailableBooks();
+            ExecuteAddNew();
         }
 
         private bool CanReturn()
@@ -385,7 +442,6 @@ namespace SitarLib.ViewModels
         {
             if (SelectedBorrowing != null)
             {
-                // Add confirmation dialog first
                 var confirmResult = MessageBox.Show(
                     $"Apakah Anda yakin ingin mengembalikan {SelectedBorrowing.Quantity} buku ini?",
                     "Konfirmasi Pengembalian",
@@ -395,17 +451,15 @@ namespace SitarLib.ViewModels
                 if (confirmResult == MessageBoxResult.Yes)
                 {
                     DataService.ReturnBook(SelectedBorrowing.Id);
-
                     string message = $"{SelectedBorrowing.Quantity} buku berhasil dikembalikan!";
                     
                     DialogService.ShowMessage(message);
                     LoadBorrowings();
-                    LoadAvailableBooks(); // Refresh book stock
+                    LoadAvailableBooks();
                 }
             }
             else
             {
-                // If nothing is selected, notify the user
                 DialogService.ShowMessage("Silakan pilih data peminjaman untuk mengembalikan.");
             }
         }
